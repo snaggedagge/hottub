@@ -12,3 +12,6 @@ sudo systemctl enable bath.service
 add folder bath to /var/
 
 add built fat-jar to /var/bath
+
+
+Also, AWS credentials must be uploaded for hottub to be able to push statistics and webportal location to S3
