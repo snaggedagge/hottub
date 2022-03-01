@@ -1,0 +1,12 @@
+[Unit]
+Description=Bathtub_Webpage
+After=syslog.target
+
+[Service]
+User=root
+WorkingDirectory=/var/bath
+ExecStart=/var/bath/run.sh
+
+
+[Install]
+WantedBy=multi-user.target

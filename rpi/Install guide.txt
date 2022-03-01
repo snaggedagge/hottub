@@ -1,0 +1,14 @@
+Install java?
+
+
+
+drop service file under /etc/systemd/system/
+named bath.service 
+
+Perhaps run chmod 755 on it aswell
+
+sudo systemctl enable bath.service
+
+add folder bath to /var/
+
+add built fat-jar to /var/bath

@@ -1,0 +1,12 @@
+server.port: 80
+spring:
+  thymeleaf.cache: true
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: true
+      WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS: false
+    deserialization:
+      READ_DATE_TIMESTAMPS_AS_NANOSECONDS: false
+dkarlsso.security.jwt:
+  subject: Hottub Time Machine
+  baseURL: http://webportal.dkarlsso.com
