@@ -1,4 +1,4 @@
-package hottub.repository;
+package hottub.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

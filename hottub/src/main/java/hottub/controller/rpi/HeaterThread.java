@@ -3,7 +3,7 @@ package hottub.controller.rpi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import hottub.model.settings.HeaterDataSettings;
-import hottub.repository.RunningTime;
+import hottub.model.RunningTime;
 import hottub.service.RunningTimeService;
 import dkarlsso.commons.raspberry.RunningClock;
 import hottub.model.settings.TimerSettings;

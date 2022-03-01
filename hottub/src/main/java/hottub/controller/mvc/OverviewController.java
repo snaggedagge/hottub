@@ -1,14 +1,15 @@
 package hottub.controller.mvc;
 
 import dkarlsso.commons.raspberry.OSHelper;
-import dkarlsso.commons.repository.FileDataRepository;
+import dkarlsso.commons.repository.settings.SettingsFilesystemRepository;
 import hottub.model.settings.HeaterDataSettings;
-import hottub.repository.RunningTime;
+import hottub.model.RunningTime;
 import hottub.service.RunningTimeService;
 import hottub.model.settings.Settings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.springframework.stereotype.Controller;
@@ -30,14 +31,14 @@ public class OverviewController {
 
     private final HeaterDataSettings heaterDTO;
 
-    private final FileDataRepository<Settings> settingsRepository;
+    private final SettingsFilesystemRepository<Settings> settingsRepository;
 
     private final Environment environment;
 
     @Autowired
     public OverviewController(final RunningTimeService runningTimeService,
                               final HeaterDataSettings heaterDTO,
-                              final FileDataRepository<Settings> settingsRepository,
+                              final SettingsFilesystemRepository<Settings> settingsRepository,
                               final Environment environment) {
         this.settingsRepository = settingsRepository;
         this.environment = environment;
@@ -56,6 +57,9 @@ public class OverviewController {
         final List<String> infoList = new ArrayList<>();
         if (!OSHelper.isRaspberryPi()) {
             infoList.add("This instance is a mocked website, Eg. It is not running on the actual bathtub, so it aint controlling shit");
+        }
+        if (!environment.acceptsProfiles(Profiles.of("internet-access"))) {
+            infoList.add("The bathtub does not seem to have internet access, so it is storing the statistics locally");
         }
 
         model.addAttribute("infoList", infoList);

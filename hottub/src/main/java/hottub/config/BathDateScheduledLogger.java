@@ -1,7 +1,7 @@
 package hottub.config;
 
+import dkarlsso.commons.repository.CrudRepository;
 import hottub.model.BathDate;
-import hottub.repository.BathDatePersistenceRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -18,10 +18,10 @@ public class BathDateScheduledLogger {
 
     private LocalDate lastLoggedDate = LocalDate.now();
 
-    private final BathDatePersistenceRepository bathDateLogRepository;
+    private final CrudRepository<BathDate, String> bathDateLogRepository;
 
     @Autowired
-    public BathDateScheduledLogger(BathDatePersistenceRepository bathDateLogRepository) {
+    public BathDateScheduledLogger(CrudRepository<BathDate, String> bathDateLogRepository) {
         this.bathDateLogRepository = bathDateLogRepository;
     }
 

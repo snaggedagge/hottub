@@ -1,7 +1,7 @@
 package hottub.service;
 
-import hottub.repository.RunningTime;
-import hottub.repository.RunningTimeRepository;
+import dkarlsso.commons.repository.CrudRepository;
+import hottub.model.RunningTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,10 +10,10 @@ import java.time.Duration;
 @Service
 public class RunningTimeService {
 
-    private final RunningTimeRepository runningTimeRepository;
+    private final CrudRepository<RunningTime, String> runningTimeRepository;
 
     @Autowired
-    public RunningTimeService(final RunningTimeRepository runningTimeRepository) {
+    public RunningTimeService(final CrudRepository<RunningTime, String> runningTimeRepository) {
         this.runningTimeRepository = runningTimeRepository;
     }
 

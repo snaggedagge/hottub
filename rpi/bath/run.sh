@@ -1,5 +1,5 @@
 #!/bin/bash
-export -p spring_profiles_active=bath
+export -p spring_profiles_active=internet-access
 sudo dtoverlay w1-gpio gpiopin=4 pullup=0
 sudo dtoverlay w1-gpio gpiopin=17 pullup=0
 java -Xmx160m -jar /var/bath/bathtub-2.0.jar
