@@ -50,7 +50,7 @@ async function changeSettings(handlerInput, changeSettingsFunction, responseMeth
 async function getStats() {
     var response;
     const address = await getAddress();
-    axios.get(`${address}/api/stats`)
+    await axios.get(`${address}/api/stats`)
       .then(statsResponse => {
         response = statsResponse.data;
       });
@@ -137,15 +137,15 @@ const StatsIntent = {
   },
   async handle(handlerInput) {
     try {
-        const stats = getStats();
+        const stats = await getStats();
         if (stats.temperature > 34) {
             return handlerInput.responseBuilder
-              .speak(`The hottub is hot, and the ducks are ready. If you must know, temperature is ${stats.temperature} degrees.`)
+              .speak(`The hottub is warm, and the ducks are ready. If you must know, temperature is ${stats.temperature} degrees.`)
               .getResponse();
         }
-            return handlerInput.responseBuilder
-              .speak(`The ducks are not yet ready, since temperature is only ${stats.temperature} degrees.`)
-              .getResponse();
+        return handlerInput.responseBuilder
+          .speak(`The ducks are not yet ready, since temperature is only ${stats.temperature} degrees.`)
+          .getResponse();
     }
     catch (error) {
         return handlerInput.responseBuilder
