@@ -8,7 +8,7 @@
 const Alexa = require('ask-sdk');
 const axiosLib = require('axios');
 const axios = axiosLib.create();
-axios.defaults.timeout = 2000;
+axios.defaults.timeout = 4000;
 
 async function getAddress() {
     var address = '';
@@ -151,7 +151,7 @@ const StatsIntent = {
     }
     catch (error) {
         return handlerInput.responseBuilder
-              .speak("Could not ask hottub for stats, probably an network error")
+              .speak("Could not ask hottub for stats, probably an network error. Have you tried turning it on and off again?")
               .getResponse();
     }
   },
