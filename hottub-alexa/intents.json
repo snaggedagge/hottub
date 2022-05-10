@@ -1,0 +1,84 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "hot tub",
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.YesIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.FallbackIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NoIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "Stats",
+          "slots": [],
+          "samples": [
+            "temperature",
+            "stats"
+          ]
+        },
+        {
+          "name": "Lights",
+          "slots": [],
+          "samples": [
+            "lights",
+            "turn off lights",
+            "turn on lights"
+          ]
+        },
+        {
+          "name": "IncreaseTemperature",
+          "slots": [],
+          "samples": [
+            "raise",
+            "increase",
+            "raise temperature",
+            "increase temperature"
+          ]
+        },
+        {
+          "name": "DecreaseTemperature",
+          "slots": [],
+          "samples": [
+            "lower",
+            "decrease",
+            "lower temperature",
+            "decrease temperature"
+          ]
+        },
+        {
+          "name": "Easteregg",
+          "slots": [],
+          "samples": [
+            "shits fucked",
+            "shit's fucked",
+            "easter egg"
+          ]
+        }
+      ],
+      "types": []
+    }
+  }
+}
