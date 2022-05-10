@@ -6,7 +6,9 @@
 /* eslint-disable  no-console */
 /* eslint-disable  no-restricted-syntax */
 const Alexa = require('ask-sdk');
-const axios = require('axios');
+const axiosLib = require('axios');
+const axios = axiosLib.create();
+axios.defaults.timeout = 2000;
 
 async function getAddress() {
     var address = '';
