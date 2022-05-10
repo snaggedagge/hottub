@@ -30,7 +30,7 @@ public class WebPortalConnector {
                 .permission(Permission.UNAUTHORIZED)
                 .websiteId("hottub")
                 .websiteName("Hottub Time Machine")
-                .infoLink("https://github.com/snaggedagge/java-development/blob/master/bathtub/README.md")
+                .infoLink("https://github.com/snaggedagge/hottub")
                 .hasLogin(true)
                 .websiteDescription("Hottub website, used for monitoring and controlling my own hottub functionality and temperatures.")
                 .lastSeen(Instant.now())
