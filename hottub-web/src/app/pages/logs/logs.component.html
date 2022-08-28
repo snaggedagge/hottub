@@ -1,0 +1,9 @@
+<mat-card class="center content">
+  <mat-card-title>Logs</mat-card-title>
+  <mat-card-content>
+    <ng-container *ngFor="let row of logEntries?.rows">
+      {{row}}<br>
+    </ng-container>
+  </mat-card-content>
+</mat-card>
+<br>

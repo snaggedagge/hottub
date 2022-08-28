@@ -1,0 +1,116 @@
+<mat-card class="center content">
+  <mat-card-title>Stats</mat-card-title>
+  <mat-card-content>
+    <table mat-table [dataSource]="statsDataSource">
+      <ng-container matColumnDef="temperature">
+        <th mat-header-cell *matHeaderCellDef> Bath Temperature </th>
+        <td mat-cell *matCellDef="let element"> <strong>{{element.temperature}}</strong> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="heatingPanTemperature">
+        <th mat-header-cell *matHeaderCellDef> Heater Temperature </th>
+        <td mat-cell *matCellDef="let element"> <strong>{{element.heatingPanTemperature}}</strong> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="heating">
+        <th mat-header-cell *matHeaderCellDef> Heating </th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-raised-button color="warn" [class]="element.heating ? 'ok' : ''">
+            {{element.heating ? 'On' : 'Off'}}
+          </button>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="circulating">
+        <th mat-header-cell *matHeaderCellDef> Circulating </th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-raised-button color="warn" [class]="element.circulating ? 'ok' : ''">
+            {{element.circulating ? 'On' : 'Off'}}
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="['temperature', 'heatingPanTemperature', 'heating', 'circulating']"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['temperature', 'heatingPanTemperature', 'heating', 'circulating'];"></tr>
+    </table>
+
+  </mat-card-content>
+</mat-card>
+<br>
+<mat-card class="center content">
+  <mat-card-title>Settings</mat-card-title>
+  <mat-card-content>
+    <form [formGroup]="settingsForm">
+      <table mat-table [dataSource]="settingsDataSource">
+        <ng-container matColumnDef="temperatureLimit">
+          <th mat-header-cell *matHeaderCellDef> Temperature Limit </th>
+          <td mat-cell *matCellDef="let element">
+            <mat-form-field appearance="standard">
+              <input type="number" matInput formControlName="temperatureLimit">
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="temperatureDelta">
+          <th mat-header-cell *matHeaderCellDef> Temperature Difference </th>
+          <td mat-cell *matCellDef="let element">
+            <mat-form-field appearance="standard">
+              <input type="number" matInput formControlName="temperatureDelta">
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="heatingPanTemperatureLimit">
+          <th mat-header-cell *matHeaderCellDef> Heater Temperature Limit </th>
+          <td mat-cell *matCellDef="let element">
+            <mat-form-field appearance="standard">
+              <input type="number" matInput formControlName="heatingPanTemperatureLimit">
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="circulationTimeCycle">
+          <th mat-header-cell *matHeaderCellDef> Circulation Time Cycle </th>
+          <td mat-cell *matCellDef="let element">
+            <mat-form-field appearance="standard">
+              <input type="number" matInput formControlName="circulationTimeCycle">
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="lightsOn">
+          <th mat-header-cell *matHeaderCellDef> Lights </th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-raised-button color="warn" [class]="element.lightsOn ? 'ok' : ''"
+                    (click)="setting.lightsOn = !setting.lightsOn">
+              {{element.lightsOn ? 'On' : 'Off'}}
+            </button>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="debugMode">
+          <th mat-header-cell *matHeaderCellDef> Debug Mode </th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-raised-button color="warn" [class]="element.debugMode ? 'ok' : ''"
+                    (click)="setting.debugMode = !setting.debugMode">
+              {{element.debugMode ? 'On' : 'Off'}}
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="['temperatureLimit', 'temperatureDelta', 'heatingPanTemperatureLimit',
+      'circulationTimeCycle', 'lightsOn', 'debugMode']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['temperatureLimit', 'temperatureDelta', 'heatingPanTemperatureLimit',
+      'circulationTimeCycle', 'lightsOn', 'debugMode'];"></tr>
+      </table>
+    </form>
+
+
+  </mat-card-content>
+  <mat-card-actions align="start">
+    <button mat-raised-button color="primary" (click)="updateSettings()">
+      Update Settings
+    </button>
+  </mat-card-actions>
+</mat-card>
+<br>

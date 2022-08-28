@@ -1,0 +1,276 @@
+openapi: 3.0.3
+info:
+  title: Hottub API
+  description: |-
+    API for hottub
+  version: "1.0"
+tags:
+  - name: stats
+    description: Information about hot tubs operational data
+  - name: settings
+    description: Change and get information about hot tub settings
+  - name: timers
+    description: Create and manage timers
+  - name: log
+    description: Retrieve logs
+  - name: statistics
+    description: Statistics of hot tub
+servers:
+  - url: http://localhost/api
+paths:
+  /stats:
+    get:
+      tags:
+        - stats
+      summary: Get current stats of hottub
+      description: Retrieves stats such as temperatures of the hottub
+      operationId: getStats
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stats'
+  /settings:
+    get:
+      tags:
+        - settings
+      summary: Get current settings of hottub
+      description: Retrieves settings such as temperature limits of the hottub
+      operationId: getSettings
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Settings'
+    put:
+      tags:
+        - settings
+      summary: Update current settings of hottub
+      description: Update current settings of hottub
+      operationId: updateSettings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Settings'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Settings'
+  /timers:
+    get:
+      tags:
+        - timers
+      summary: Get current timers of hottub
+      description: Get current timers of hottub
+      operationId: getTimers
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TimerEntity'
+    post:
+      tags:
+        - timers
+      summary: Add a new timer
+      operationId: addTimer
+      requestBody:
+        description: Create a new timer
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Timer'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimerEntity'
+  /timers/{timer-id}:
+    put:
+      tags:
+        - timers
+      summary: Update an existing timer
+      description: Update an existing timer
+      operationId: updateTimer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Timer'
+        required: true
+      parameters:
+        - name: timer-id
+          in: path
+          description: ID of timer
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimerEntity'
+    delete:
+      tags:
+        - timers
+      summary: Delete an existing timer
+      description: Delete an existing timer
+      operationId: deleteTimer
+      parameters:
+        - name: timer-id
+          in: path
+          description: ID of timer
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Successful operation
+  /logs:
+    get:
+      tags:
+        - logs
+      summary: Get logs of hottub
+      description: Retrieves logs from the hottub
+      operationId: getLogs
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogEntry'
+  /statistics:
+    get:
+      tags:
+        - statistics
+      summary: Get statistics of hottub
+      description: Retrieves statistics such as total hours of the hottub
+      operationId: getStatistics
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Statistics'
+components:
+  schemas:
+    Stats:
+      required:
+        - temperature
+        - heatingPanTemperature
+        - heating
+        - circulating
+      type: object
+      properties:
+        temperature:
+          type: integer
+          description: Current temperature in hot tub
+        heatingPanTemperature:
+          type: integer
+          description: Current temperature in hot tub heating pan
+        heating:
+          type: boolean
+          description: Whether the heating is currently on or off
+        circulating:
+          type: boolean
+          description: Whether the circulation pump is currently on or off
+    Settings:
+      required:
+        - temperatureLimit
+        - temperatureDelta
+        - heatingPanTemperatureLimit
+        - circulationTimeCycle
+        - lightsOn
+        - debugMode
+      type: object
+      properties:
+        temperatureLimit:
+          type: integer
+          description: Wanted temperature in hot tub
+        temperatureDelta:
+          type: integer
+          description: Delta temperature difference between sensed temperature and actual temperature. Needed since temperature sensor is in the bottom, meaning temperatures will differ a few degrees from the sensor and the top of the hottub
+        heatingPanTemperatureLimit:
+          type: integer
+          description: Maximum temperature allowed in heating pan until circulation pump should start operating
+        circulationTimeCycle:
+          type: integer
+          description: Number of minutes between circulation pump operations, to make sure nothing freezes in winter and to stir around the water a bit
+        lightsOn:
+          type: boolean
+          description: Whether the lights should be on or off
+        debugMode:
+          type: boolean
+          description: Activate debug logs, which will log a lot more of operational information
+    Timer:
+      required:
+        - settings
+        - time
+      type: object
+      properties:
+        settings:
+          $ref: '#/components/schemas/Settings'
+        time:
+          type: string
+          format: date-time
+          description: Timestamp for when this settings should kick in
+    TimerEntity:
+      description: An existing timer entity
+      allOf:     # Combines the BasicErrorModel and the inline model
+        - $ref: '#/components/schemas/Timer'
+        - type: object
+          required:
+            - id
+          properties:
+            id:
+              type: string
+              format: uuid
+    LogEntry:
+      required:
+        - rows
+      type: object
+      properties:
+          rows:
+            type: array
+            items:
+              type: string
+    Statistics:
+      required:
+        - heaterHours
+        - circulationPumpHours
+        - effectiveBathTimeHours
+      type: object
+      properties:
+        heaterHours:
+          type: number
+          description: Total amount of hours on heater
+        heaterHoursSinceStart:
+          type: number
+          description: Total amount of hours on heater since hot tub started.
+        circulationPumpHours:
+          type: number
+          description: Total amount of hours on circulation pump
+        effectiveBathTimeHours:
+          type: number
+          description: Total amount of hours where temperature has been good for bathing

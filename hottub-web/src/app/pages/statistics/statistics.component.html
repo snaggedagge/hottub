@@ -1,0 +1,30 @@
+<mat-card class="center content">
+  <mat-card-title>Statistics</mat-card-title>
+  <mat-card-content>
+    <table mat-table [dataSource]="statisticsDataSource">
+      <ng-container matColumnDef="heaterHours">
+        <th mat-header-cell *matHeaderCellDef> Total hours heater </th>
+        <td mat-cell *matCellDef="let element"> <strong>{{element.heaterHours | number: '1.2-2'}}</strong> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="heaterHoursSinceStart">
+        <th mat-header-cell *matHeaderCellDef> Heater Hours Since Start </th>
+        <td mat-cell *matCellDef="let element"> <strong>{{element.heaterHoursSinceStart | number: '1.2-2'}}</strong> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="circulationPumpHours">
+        <th mat-header-cell *matHeaderCellDef> Total hours circulation pump </th>
+        <td mat-cell *matCellDef="let element"> <strong>{{element.circulationPumpHours | number: '1.2-2'}}</strong> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="effectiveBathTimeHours">
+        <th mat-header-cell *matHeaderCellDef> Total Effective Bath Time </th>
+        <td mat-cell *matCellDef="let element"> <strong>{{element.effectiveBathTimeHours | number: '1.2-2'}}</strong> </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="['heaterHours', 'heaterHoursSinceStart', 'circulationPumpHours', 'effectiveBathTimeHours']"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['heaterHours', 'heaterHoursSinceStart', 'circulationPumpHours', 'effectiveBathTimeHours'];"></tr>
+    </table>
+
+  </mat-card-content>
+</mat-card>

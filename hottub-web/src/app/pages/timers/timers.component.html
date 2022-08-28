@@ -1,0 +1,125 @@
+<mat-card class="center content" *ngIf="timersDataSource.length > 0">
+  <mat-card-title>Existing Timers</mat-card-title>
+  <mat-card-content>
+    <table mat-table [dataSource]="timersDataSource">
+      <ng-container matColumnDef="time">
+        <th mat-header-cell *matHeaderCellDef> Time </th>
+        <td mat-cell *matCellDef="let element"> <strong>{{element.time | date: 'dd/MM/yyyy HH:mm'}}</strong> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="temperatureLimit">
+        <th mat-header-cell *matHeaderCellDef> Temperature Limit </th>
+        <td mat-cell *matCellDef="let element"> <strong>{{element.settings.temperatureLimit}}</strong> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="temperatureDelta">
+        <th mat-header-cell *matHeaderCellDef> Temperature Delta </th>
+        <td mat-cell *matCellDef="let element"> <strong>{{element.settings.temperatureDelta}}</strong> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="heatingPanTemperatureLimit">
+        <th mat-header-cell *matHeaderCellDef> Heater Temperature Limit </th>
+        <td mat-cell *matCellDef="let element"> <strong>{{element.settings.heatingPanTemperatureLimit}}</strong> </td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="lightsOn">
+        <th mat-header-cell *matHeaderCellDef> Lights On </th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-raised-button color="warn" [class]="element.settings.lightsOn ? 'ok' : ''">
+            {{element.settings.lightsOn ? 'On' : 'Off'}}
+          </button>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="delete">
+        <th mat-header-cell *matHeaderCellDef> Delete </th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-raised-button color="warn" (click)="deleteTimer(element.id)">
+            Delete
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="['time', 'temperatureLimit', 'temperatureDelta',
+      'heatingPanTemperatureLimit','lightsOn', 'delete']"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['time', 'temperatureLimit', 'temperatureDelta',
+      'heatingPanTemperatureLimit','lightsOn', 'delete'];"></tr>
+    </table>
+
+  </mat-card-content>
+</mat-card>
+<br>
+<mat-card class="center content">
+  <mat-card-title>Settings</mat-card-title>
+  <mat-card-content>
+    <form [formGroup]="settingsForm">
+      <table mat-table [dataSource]="[setting]">
+        <ng-container matColumnDef="temperatureLimit">
+          <th mat-header-cell *matHeaderCellDef> Temperature Limit </th>
+          <td mat-cell *matCellDef="let element">
+            <mat-form-field appearance="standard">
+              <input type="number" matInput formControlName="temperatureLimit">
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="temperatureDelta">
+          <th mat-header-cell *matHeaderCellDef> Temperature Difference </th>
+          <td mat-cell *matCellDef="let element">
+            <mat-form-field appearance="standard">
+              <input type="number" matInput formControlName="temperatureDelta">
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="heatingPanTemperatureLimit">
+          <th mat-header-cell *matHeaderCellDef> Heater Temperature Limit </th>
+          <td mat-cell *matCellDef="let element">
+            <mat-form-field appearance="standard">
+              <input type="number" matInput formControlName="heatingPanTemperatureLimit">
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="circulationTimeCycle">
+          <th mat-header-cell *matHeaderCellDef> Circulation Time Cycle </th>
+          <td mat-cell *matCellDef="let element">
+            <mat-form-field appearance="standard">
+              <input type="number" matInput formControlName="circulationTimeCycle">
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="lightsOn">
+          <th mat-header-cell *matHeaderCellDef> Lights </th>
+          <td mat-cell *matCellDef="let element">
+            <mat-checkbox class="example-margin" formControlName="lightsOn">On</mat-checkbox>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="debugMode">
+          <th mat-header-cell *matHeaderCellDef> Debug Mode </th>
+          <td mat-cell *matCellDef="let element">
+            <mat-checkbox class="example-margin" formControlName="debugMode">On</mat-checkbox>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="['temperatureLimit', 'temperatureDelta', 'heatingPanTemperatureLimit',
+      'circulationTimeCycle', 'lightsOn', 'debugMode']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['temperatureLimit', 'temperatureDelta', 'heatingPanTemperatureLimit',
+      'circulationTimeCycle', 'lightsOn', 'debugMode'];"></tr>
+      </table>
+    </form>
+    <mat-form-field appearance="outline">
+      <mat-label>Input type time</mat-label>
+      <input type="datetime-local" matInput [(ngModel)]="time">
+    </mat-form-field>
+  </mat-card-content>
+  <mat-card-actions align="start">
+    <button mat-raised-button color="primary" (click)="updateSettings()">
+      Add Timer
+    </button>
+  </mat-card-actions>
+</mat-card>
+<br>
