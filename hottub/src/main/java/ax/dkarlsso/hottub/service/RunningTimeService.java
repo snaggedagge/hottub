@@ -5,8 +5,6 @@ import dkarlsso.commons.repository.CrudRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
-
 @Service
 public class RunningTimeService {
 
@@ -20,12 +18,12 @@ public class RunningTimeService {
     public void saveTime(final RunningTime runningTime) {
         if(runningTimeRepository.exists(RunningTime.IDENTIFIER)) {
             final RunningTime oldTime = runningTimeRepository.findById(RunningTime.IDENTIFIER);
-            runningTime.setBathTotalTime(Duration.ofNanos(oldTime.getBathTotalTime().toNanos()
-                    + runningTime.getBathTotalTime().toNanos()));
-            runningTime.setRunningTimeCirculation(Duration.ofNanos(oldTime.getRunningTimeCirculation().toNanos()
-                    + runningTime.getRunningTimeCirculation().toNanos()));
-            runningTime.setRunningTimeHeater(Duration.ofNanos(oldTime.getRunningTimeHeater().toNanos()
-                    + runningTime.getRunningTimeHeater().toNanos()));
+            runningTime.setBathTotalTime(
+                    oldTime.getBathTotalTime().plusNanos(runningTime.getBathTotalTime().toNanos()));
+            runningTime.setRunningTimeCirculation(
+                    oldTime.getRunningTimeCirculation().plusNanos(runningTime.getRunningTimeCirculation().toNanos()));
+            runningTime.setRunningTimeHeater(
+                    oldTime.getRunningTimeHeater().plusNanos(runningTime.getRunningTimeHeater().toNanos()));
             runningTimeRepository.save(runningTime);
         }
         else {

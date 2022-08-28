@@ -12,17 +12,17 @@ import java.time.Duration;
 @AllArgsConstructor
 @Data
 public class OperationalData {
-    private int returnTemp = 0;
+    private int returnTemp;
 
-    private int overTemp = 0;
+    private int overTemp;
 
-    private boolean heating = false;
+    private boolean heating;
 
-    private boolean circulating = false;
+    private boolean circulating;
 
-    private boolean circulateBasedOnTimer = false;
+    private boolean circulateBasedOnTimer;
 
-    private Duration heaterTimeSinceStarted = Duration.ofSeconds(0);
+    private Duration heaterTimeSinceStarted;
 
 
     public void apply(final OperationalData operationalData) {

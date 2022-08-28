@@ -66,7 +66,7 @@ public class HeaterThread extends Thread {
                         operationsService.deleteTimer(timer.getUuid());
                     }
                 });
-                Thread.sleep(Duration.ofSeconds(30).toMillis());
+                Thread.sleep(Duration.ofSeconds(20).toMillis());
             }
             catch (final InterruptedException e) {
                 log.info("Thread woken up");
