@@ -45,27 +45,8 @@ public class HeaterThread extends Thread {
         while (true) {
             try {
                 heater.loop();
-
-                final OperationalData operationalData = operationsService.getOperationalData();
-                final Settings settings = operationsService.getSettings();
-                heaterClock.setStartedRunning(operationalData.isHeating());
-                circulationClock.setStartedRunning(operationalData.isCirculating());
-
-                boolean isBathtime = operationalData.getReturnTemp() > 35 && settings.getReturnTempLimit() > 35;
-                bathClock.setStartedRunning(isBathtime);
-
-                runningTimeService.saveTime(new RunningTime(heaterClock.getRunningTimeAndReset(),
-                        circulationClock.getRunningTimeAndReset(), bathClock.getRunningTimeAndReset()));
-                operationalData.setHeaterTimeSinceStarted(heaterClock.getTotalRunningTime());
-                operationsService.updateOperationalData(operationalData);
-
-                operationsService.getTimers().forEach(timer -> {
-                    if (timer.getStartHeatingTime().isBefore(Instant.now())) {
-                        log.warn("Activating timer");
-                        operationsService.updateSettings(timer.getSettings());
-                        operationsService.deleteTimer(timer.getUuid());
-                    }
-                });
+                handleClocks();
+                handleTimers();
                 Thread.sleep(Duration.ofSeconds(20).toMillis());
             }
             catch (final InterruptedException e) {
@@ -75,5 +56,30 @@ public class HeaterThread extends Thread {
                 log.error("Something critical occurred", e);
             }
         }
+    }
+
+    private void handleTimers() {
+        operationsService.getTimers().forEach(timer -> {
+            if (timer.getStartHeatingTime().isBefore(Instant.now())) {
+                log.warn("Activating timer");
+                operationsService.updateSettings(timer.getSettings());
+                operationsService.deleteTimer(timer.getUuid());
+            }
+        });
+    }
+
+    private void handleClocks() {
+        final OperationalData operationalData = operationsService.getOperationalData();
+        final Settings settings = operationsService.getSettings();
+        heaterClock.setStartedRunning(operationalData.isHeating());
+        circulationClock.setStartedRunning(operationalData.isCirculating());
+
+        boolean isBathtime = operationalData.getReturnTemp() > 35 && settings.getReturnTempLimit() > 35;
+        bathClock.setStartedRunning(isBathtime);
+
+        runningTimeService.saveTime(new RunningTime(heaterClock.getRunningTimeAndReset(),
+                circulationClock.getRunningTimeAndReset(), bathClock.getRunningTimeAndReset()));
+        operationalData.setHeaterTimeSinceStarted(heaterClock.getTotalRunningTime());
+        operationsService.updateOperationalData(operationalData);
     }
 }

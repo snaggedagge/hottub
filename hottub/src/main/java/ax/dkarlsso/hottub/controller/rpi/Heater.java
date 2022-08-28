@@ -5,10 +5,7 @@ import ax.dkarlsso.hottub.model.settings.OperationalData;
 import ax.dkarlsso.hottub.model.settings.Settings;
 import ax.dkarlsso.hottub.service.OperationsService;
 import ax.dkarlsso.hottub.utils.CustomTimer;
-import dkarlsso.commons.raspberry.enums.GPIOPins;
-import dkarlsso.commons.raspberry.relay.OptoRelay;
 import dkarlsso.commons.raspberry.relay.interfaces.RelayInterface;
-import dkarlsso.commons.raspberry.sensor.temperature.DS18B20;
 import dkarlsso.commons.raspberry.sensor.temperature.TemperatureSensor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,32 +31,20 @@ public class Heater implements HeaterInterface {
     private int circulationTemperatureDelta = 0;
 
     /**
-     * Real implementation. Terrible i know, should be dependency injected everything, but im lazy
+     * Dependency Injected constructor
      * @param operationsService operationsService
+     * @param overTemp overTemp
+     * @param returnTemp returnTemp
+     * @param heatingRelay heatingRelay
+     * @param circulationRelay circulationRelay
+     * @param lightRelay lightRelay
      */
-    public Heater(final OperationsService operationsService) {
-        returnTemperatureSensor = new DS18B20("28-030c979428d4");
-        heatingPanSensor = new DS18B20("28-030297942385");
-
-        this.operationsService = operationsService;
-
-        lightRelay = new OptoRelay(GPIOPins.GPIO19);
-        heatingRelay = new OptoRelay(GPIOPins.GPIO13);
-        circulationRelay = new OptoRelay(GPIOPins.GPIO26);
-
-    }
-
-    /**
-     * For simplified unittesting...
-     * @param overTemp
-     * @param returnTemp
-     * @param operationsService
-     * @param heatingRelay
-     * @param circulationRelay
-     * @param lightRelay
-     */
-    public Heater(TemperatureSensor overTemp, TemperatureSensor returnTemp, final OperationsService operationsService,
-                  RelayInterface heatingRelay,RelayInterface circulationRelay,RelayInterface lightRelay) {
+    public Heater(final OperationsService operationsService,
+                  final TemperatureSensor overTemp,
+                  final TemperatureSensor returnTemp,
+                  final RelayInterface heatingRelay,
+                  final RelayInterface circulationRelay,
+                  final RelayInterface lightRelay) {
         heatingPanSensor = overTemp;
         returnTemperatureSensor = returnTemp;
 
@@ -75,6 +60,7 @@ public class Heater implements HeaterInterface {
         circulationRelay.setState(operationalData.isCirculating());
         lightRelay.setState(settings.isLightsOn());
         if(settings.isDebug()) {
+            // TODO: Fix weird debug logging
             log.info("DEBUG:Heating {}", operationalData.isHeating());
             log.info("DEBUG:Circulating {}", operationalData.isCirculating());
             log.info("DEBUG:Circulating based on timer {}", operationalData.isCirculateBasedOnTimer());
@@ -84,7 +70,6 @@ public class Heater implements HeaterInterface {
 
 
     private void setLogicalOutput(final OperationalData operationalData, final Settings settings){
-
         if(operationalData.getReturnTemp() + heatingTemperatureDelta < settings.getReturnTempLimit())
         {
             heatingTemperatureDelta = 0;
@@ -123,14 +108,14 @@ public class Heater implements HeaterInterface {
         final Settings settings = operationsService.getSettings();
         final OperationalData operationalData = operationsService.getOperationalData();
         try {
-
             operationalData.setReturnTemp((int) returnTemperatureSensor.readTemp() + settings.getTemperatureDiff());
             if (settings.isDebug()) {
                 log.warn("Real temperature is " + (operationalData.getReturnTemp() - settings.getTemperatureDiff()));
             }
             operationalData.setOverTemp((int) heatingPanSensor.readTemp());
             setLogicalOutput(operationalData, settings);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             log.error("TEMPERATURE ERROR: " + e.getMessage(), e);
             turnAllOff(settings, operationalData);
         }

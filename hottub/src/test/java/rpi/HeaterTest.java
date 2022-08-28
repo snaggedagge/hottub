@@ -42,7 +42,7 @@ public class HeaterTest {
         EasyMock.expect(overTempMax.readTemp()).andStubReturn(40.0);
         EasyMock.replay(overTempMax);
         EasyMock.replay(returnTempMax);
-        Heater heater = new Heater(overTempMax,returnTempMax,operationsService,relay,relay,relay);
+        Heater heater = new Heater(operationsService,overTempMax,returnTempMax,relay,relay,relay);
 
         settings.setReturnTempLimit(37);
         settings.setOverTempLimit(45);
@@ -64,7 +64,7 @@ public class HeaterTest {
         EasyMock.expect(overTempMax.readTemp()).andStubReturn(15.0);
         EasyMock.replay(overTempMax);
         EasyMock.replay(returnTempMax);
-        Heater heater = new Heater(overTempMax,returnTempMax,operationsService,relay,relay,relay);
+        Heater heater = new Heater(operationsService,overTempMax,returnTempMax,relay,relay,relay);
 
         settings.setReturnTempLimit(12);
         settings.setOverTempLimit(20);
@@ -86,7 +86,7 @@ public class HeaterTest {
         EasyMock.expect(overTempMax.readTemp()).andStubReturn(58.0);
         EasyMock.replay(overTempMax);
         EasyMock.replay(returnTempMax);
-        Heater heater = new Heater(overTempMax,returnTempMax,operationsService,relay,relay,relay);
+        Heater heater = new Heater(operationsService,overTempMax,returnTempMax,relay,relay,relay);
 
         settings.setReturnTempLimit(37);
         settings.setOverTempLimit(45);
@@ -108,7 +108,7 @@ public class HeaterTest {
         EasyMock.expect(overTempMax.readTemp()).andThrow(new NoConnectionException());
         EasyMock.replay(overTempMax);
         EasyMock.replay(returnTempMax);
-        Heater heater = new Heater(overTempMax,returnTempMax,operationsService,relay,relay,relay);
+        Heater heater = new Heater(operationsService,overTempMax,returnTempMax,relay,relay,relay);
 
         settings.setReturnTempLimit(35);
         settings.setOverTempLimit(45);
@@ -129,7 +129,7 @@ public class HeaterTest {
         EasyMock.expect(overTempMax.readTemp()).andStubReturn(59.0);
         EasyMock.replay(overTempMax);
         EasyMock.replay(returnTempMax);
-        Heater heater = new Heater(overTempMax,returnTempMax,operationsService,relay,relay,relay);
+        Heater heater = new Heater(operationsService,overTempMax,returnTempMax,relay,relay,relay);
 
         settings.setReturnTempLimit(35);
         settings.setOverTempLimit(45);
@@ -149,7 +149,7 @@ public class HeaterTest {
         EasyMock.expect(overTempMax.readTemp()).andStubReturn(80.0);
         EasyMock.replay(overTempMax);
         EasyMock.replay(returnTempMax);
-        Heater heater = new Heater(overTempMax,returnTempMax,operationsService,relay,relay,relay);
+        Heater heater = new Heater(operationsService,overTempMax,returnTempMax,relay,relay,relay);
 
         settings.setReturnTempLimit(35);
         settings.setOverTempLimit(45);
@@ -169,7 +169,7 @@ public class HeaterTest {
         EasyMock.expect(overTempMax.readTemp()).andStubReturn(55.0);
         EasyMock.replay(overTempMax);
         EasyMock.replay(returnTempMax);
-        Heater heater = new Heater(overTempMax,returnTempMax,operationsService,relay,relay,relay);
+        Heater heater = new Heater(operationsService,overTempMax,returnTempMax,relay,relay,relay);
 
         settings.setReturnTempLimit(37);
         settings.setOverTempLimit(45);
@@ -189,7 +189,7 @@ public class HeaterTest {
         when(returnTempMax.readTemp()).thenReturn(35.0);
         when(overTempMax.readTemp()).thenReturn(42.0);
 
-        Heater heater = new Heater(overTempMax,returnTempMax,operationsService,relay,relay,relay);
+        Heater heater = new Heater(operationsService,overTempMax,returnTempMax,relay,relay,relay);
         settings.setReturnTempLimit(37);
         settings.setOverTempLimit(42);
         operationsService.updateSettings(settings);
@@ -233,7 +233,7 @@ public class HeaterTest {
         EasyMock.expect(overTempMax.readTemp()).andStubReturn(45.0);
         EasyMock.replay(overTempMax);
         EasyMock.replay(returnTempMax);
-        Heater heater = new Heater(overTempMax,returnTempMax,operationsService,relay,relay,relay);
+        Heater heater = new Heater(operationsService,overTempMax,returnTempMax,relay,relay,relay);
 
         settings.setReturnTempLimit(8);
         settings.setOverTempLimit(25);
@@ -253,7 +253,7 @@ public class HeaterTest {
         EasyMock.expect(overTempMax.readTemp()).andStubReturn(25.0);
         EasyMock.replay(overTempMax);
         EasyMock.replay(returnTempMax);
-        Heater heater = new Heater(overTempMax,returnTempMax,operationsService,relay,relay,relay);
+        Heater heater = new Heater(operationsService,overTempMax,returnTempMax,relay,relay,relay);
 
         settings.setReturnTempLimit(8);
         settings.setOverTempLimit(23);
@@ -274,7 +274,7 @@ public class HeaterTest {
         EasyMock.expect(overTempMax.readTemp()).andStubReturn(44.0);
         EasyMock.replay(overTempMax);
         EasyMock.replay(returnTempMax);
-        Heater heater = new Heater(overTempMax,returnTempMax,operationsService,relay,relay,relay);
+        Heater heater = new Heater(operationsService,overTempMax,returnTempMax,relay,relay,relay);
 
         // 35 + 3 = 38 == should not heat
         settings.setTemperatureDiff(3);
@@ -296,7 +296,7 @@ public class HeaterTest {
         EasyMock.expect(overTempMax.readTemp()).andStubReturn(44.0);
         EasyMock.replay(overTempMax);
         EasyMock.replay(returnTempMax);
-        Heater heater = new Heater(overTempMax,returnTempMax,operationsService,relay,relay,relay);
+        Heater heater = new Heater(operationsService,overTempMax,returnTempMax,relay,relay,relay);
 
         // 33 + 3 = 36 == should heat
         settings.setTemperatureDiff(3);
