@@ -68,7 +68,7 @@
 
     </appender>
 
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender" level="debug">
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender" level="DEBUG">
         <layout class="ch.qos.logback.classic.PatternLayout">
             <Pattern>
                 %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36}.%M\(%line\) - %msg%n
@@ -77,17 +77,17 @@
     </appender>
 
 
-    <logger name="local-connections" level="debug"
+    <logger name="local-connections" level="TRACE"
             additivity="false">
         <appender-ref ref="CONNECTIONS-LOCAL" />
     </logger>
 
-    <logger name="connections" level="debug"
+    <logger name="connections" level="TRACE"
             additivity="false">
         <appender-ref ref="CONNECTIONS" />
     </logger>
 
-    <logger name="rpi" level="debug"
+    <logger name="rpi" level="INFO"
             additivity="false">
         <appender-ref ref="FILE" />
         <appender-ref ref="STDOUT" />

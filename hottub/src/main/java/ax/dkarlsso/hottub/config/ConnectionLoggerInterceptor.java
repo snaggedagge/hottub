@@ -4,13 +4,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
 public class ConnectionLoggerInterceptor implements HandlerInterceptor {
-    Logger remoteConnectionsLog = LoggerFactory.getLogger(ConnectionLoggerInterceptor.class);
+    Logger remoteConnectionsLog = LoggerFactory.getLogger("connections");
     Logger localConnectionsLog = LoggerFactory.getLogger("local-connections");
 
 
@@ -18,14 +19,14 @@ public class ConnectionLoggerInterceptor implements HandlerInterceptor {
     public boolean preHandle(final HttpServletRequest request,
                              final HttpServletResponse response,final Object handler) throws Exception {
         String ipAddr = getRemoteAddr(request);
-
-        if(ipAddr.contains("127.0") || ipAddr.contains("0:0:0") ||  ipAddr.contains("192.168.1")) {
-            localConnectionsLog.info("Requestlogger : " + " Method: [" + request.getMethod()
-                    + "] URL: [" + request.getRequestURI()+"]" );
+        final Logger log;
+        if(ipAddr.contains("127.0") || ipAddr.contains("0:0:0") ||  ipAddr.contains("192.168.1") ) {
+            log = localConnectionsLog;
         } else {
-            remoteConnectionsLog.info("Requestlogger : " + " Method: [" + request.getMethod()
-                    + "] URL: [" + request.getRequestURI()+"] Ipadress: [" + ipAddr+"]" );
+            log = remoteConnectionsLog;
         }
+        log.trace("Requestlogger : " + " Method: [" + request.getMethod()
+                + "] URL: [" + request.getRequestURI()+"] Ipadress: [" + ipAddr+"]" );
         return true;
     }
 

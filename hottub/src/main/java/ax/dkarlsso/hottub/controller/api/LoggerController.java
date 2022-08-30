@@ -42,7 +42,9 @@ public class LoggerController implements ax.dkarlsso.hottub.interfaces.api.hottu
                 Appender<ILoggingEvent> appender = index.next();
                 if(appender instanceof FileAppender) {
                     FileAppender fileAppender = (FileAppender) appender;
-                    return new File(fileAppender.getFile());
+                    if (fileAppender.getFile().contains("debug.log")) {
+                        return new File(fileAppender.getFile());
+                    }
                 }
             }
         }

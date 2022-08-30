@@ -12,11 +12,11 @@ export class StatsComponent implements OnInit, OnDestroy{
 
   updateStatsSubscription: Subscription = interval(10000).subscribe(val => {
     this.statsService.getStats().subscribe(stats => {
-      this.statsDataSource = [stats];
+      this.stats = stats;
     })
   });
 
-  statsDataSource: Stats[] = [];
+  stats: Stats | undefined;
   settingsDataSource: Settings[] = [];
   setting: Settings | any;
 
@@ -40,7 +40,7 @@ export class StatsComponent implements OnInit, OnDestroy{
 
   ngOnInit(): void {
     this.statsService.getStats().subscribe(stats => {
-      this.statsDataSource = [stats];
+      this.stats = stats;
     })
 
     this.settingsService.getSettings().subscribe(settings => {

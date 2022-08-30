@@ -15,7 +15,7 @@ export interface PeriodicElement {
   styleUrls: ['./timers.component.sass']
 })
 export class TimersComponent implements OnInit {
-  timersDataSource: TimerEntity[] = [];
+  timers: TimerEntity[] = [];
   setting: Settings | any;
 
   settingsForm = new FormGroup({
@@ -24,10 +24,10 @@ export class TimersComponent implements OnInit {
 
     heatingPanTemperatureLimit: new FormControl('', {validators: [Validators.required, Validators.min(20), Validators.max(60)]}),
     circulationTimeCycle: new FormControl('', {validators: [Validators.required, Validators.min(2), Validators.max(15)]}),
-    lightsOn: new FormControl(''),
-    debugMode: new FormControl(''),
+    lightsOn: new FormControl(true),
+    debugMode: new FormControl(false),
   });
-  time = new FormControl('');
+  time = new FormControl();
 
 
   public constructor(private timersService: TimersService,
@@ -36,7 +36,7 @@ export class TimersComponent implements OnInit {
 
   ngOnInit(): void {
     this.timersService.getTimers().subscribe(timers => {
-      this.timersDataSource = timers;
+      this.timers = timers;
     })
 
     this.settingsService.getSettings().subscribe(settings => {
@@ -45,9 +45,8 @@ export class TimersComponent implements OnInit {
     })
   }
 
-  updateSettings() {
+  addTimer() {
     // Format: 2022-08-28T16:43:58.010+00:00
-    console.log(this.time);
     let timeZoneHour = Math.abs(new Date().getTimezoneOffset() / 60);
     const timer: Timer = {time: `${this.time}:00.000+0${timeZoneHour}:00`,
       settings: this.settingsForm.getRawValue() as unknown as Settings}

@@ -4,7 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {ApiModule} from "../generated";
+import {ApiModule, Configuration, ConfigurationParameters} from "../generated";
 import {HttpClientModule} from "@angular/common/http";
 import {MatIconModule} from "@angular/material/icon";
 import {MatToolbarModule} from "@angular/material/toolbar";
@@ -25,7 +25,7 @@ import {MatNativeDateModule} from "@angular/material/core";
 import {StatisticsComponent} from "./pages/statistics/statistics.component";
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
-
+import {apiConfigFactory} from "../environments/environment";
 
 @NgModule({
   declarations: [
@@ -40,7 +40,7 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
     AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    ApiModule,
+    ApiModule.forRoot(apiConfigFactory),
     MatIconModule,
     MatToolbarModule,
     MatButtonModule,
