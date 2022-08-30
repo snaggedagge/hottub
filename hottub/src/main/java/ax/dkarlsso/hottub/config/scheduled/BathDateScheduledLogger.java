@@ -1,4 +1,4 @@
-package ax.dkarlsso.hottub.config;
+package ax.dkarlsso.hottub.config.scheduled;
 
 import ax.dkarlsso.hottub.model.BathDate;
 import dkarlsso.commons.repository.CrudRepository;

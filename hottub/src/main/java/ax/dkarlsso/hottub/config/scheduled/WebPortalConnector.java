@@ -1,4 +1,4 @@
-package ax.dkarlsso.hottub.config;
+package ax.dkarlsso.hottub.config.scheduled;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -24,7 +24,7 @@ public class WebPortalConnector {
 
     private static final int SCHEDULED_FIFTEEN_MINUTES = 15 * 60 * 1000;
 
-    private PortalConnector portalConnector = new PortalConnector();
+    private final PortalConnector portalConnector = new PortalConnector();
 
     @Scheduled(fixedDelay = SCHEDULED_FIFTEEN_MINUTES)
     public void scheduleFixedDelayTask() {

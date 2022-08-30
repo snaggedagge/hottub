@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 @EnableScheduling
 public class WebConfig implements WebMvcConfigurer {
 
-    private final LoggerInterceptor loggerInterceptor = new LoggerInterceptor();
+    private final ConnectionLoggerInterceptor connectionLoggerInterceptor = new ConnectionLoggerInterceptor();
 
     private final SettingsFilesystemRepository<Settings> settingsRepository;
 
@@ -122,6 +122,6 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         //log.info("Adding interceptor");
-        registry.addInterceptor(loggerInterceptor);
+        registry.addInterceptor(connectionLoggerInterceptor);
     }
 }
