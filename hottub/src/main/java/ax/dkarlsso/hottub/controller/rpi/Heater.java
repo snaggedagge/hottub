@@ -57,18 +57,6 @@ public class Heater implements HeaterInterface {
         this.operationsService = operationsService;
     }
 
-    protected void setPhysicalOutput(final Settings settings, final OperationalData operationalData) {
-        heatingRelay.setState(operationalData.isHeating());
-        circulationRelay.setState(operationalData.isCirculating());
-        lightRelay.setState(settings.isLightsOn());
-        if(settings.isDebug()) {
-            log.debug("Heating {}", operationalData.isHeating());
-            log.debug("Circulating {}", operationalData.isCirculating());
-            log.debug("Circulating based on timer {}", operationalData.isCirculateBasedOnTimer());
-            log.debug("Lights {}", settings.isLightsOn());
-        }
-    }
-
     @Override
     public void loop() {
         final Settings settings = operationsService.getSettings();
@@ -80,7 +68,6 @@ public class Heater implements HeaterInterface {
                 // Log temperature without temperature diff
                 log.debug("Sensor temperature is " + (operationalData.getReturnTemp() - settings.getTemperatureDiff()));
             }
-
             operationsConfigurators.forEach(operationsConfigurator ->
                     operationsConfigurator.configure(operationalData, settings));
         }
@@ -105,5 +92,17 @@ public class Heater implements HeaterInterface {
         operationalData.setCirculating(false);
         setPhysicalOutput(settings, operationalData);
         log.error("Turning off everything");
+    }
+
+    private void setPhysicalOutput(final Settings settings, final OperationalData operationalData) {
+        heatingRelay.setState(operationalData.isHeating());
+        circulationRelay.setState(operationalData.isCirculating());
+        lightRelay.setState(settings.isLightsOn());
+        if(settings.isDebug()) {
+            log.debug("Heating {}", operationalData.isHeating());
+            log.debug("Circulating {}", operationalData.isCirculating());
+            log.debug("Circulating based on timer {}", operationalData.isCirculateBasedOnTimer());
+            log.debug("Lights {}", settings.isLightsOn());
+        }
     }
 }
