@@ -2,7 +2,7 @@ package ax.dkarlsso.hottub.utils;
 
 import java.time.Duration;
 
-public class CustomTimer {
+public class TimeElapsedTimer {
 
     private long startTime = System.currentTimeMillis()/1000;
     private long elapsedTime = startTime;

@@ -58,6 +58,9 @@ public class HeaterThread extends Thread {
         }
     }
 
+    /**
+     * Goes through set timers, and activates them when it is time
+     */
     private void handleTimers() {
         operationsService.getTimers().forEach(timer -> {
             if (timer.getStartHeatingTime().isBefore(Instant.now())) {
@@ -68,6 +71,9 @@ public class HeaterThread extends Thread {
         });
     }
 
+    /**
+     * Handles hour clocks, recording run time of individual components
+     */
     private void handleClocks() {
         final OperationalData operationalData = operationsService.getOperationalData();
         final Settings settings = operationsService.getSettings();

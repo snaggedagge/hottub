@@ -97,5 +97,6 @@
         <appender-ref ref="FILE" />
         <appender-ref ref="STDOUT" />
     </root>
+    <logger name="ax.dkarlsso.hottub.controller.rpi" level="DEBUG"/>
 
 </configuration>

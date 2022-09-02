@@ -3,6 +3,7 @@ package ax.dkarlsso.hottub.config;
 import ax.dkarlsso.hottub.controller.rpi.Heater;
 import ax.dkarlsso.hottub.controller.rpi.HeaterInterface;
 import ax.dkarlsso.hottub.controller.rpi.HeaterThread;
+import ax.dkarlsso.hottub.controller.rpi.configurator.OperationsConfigurator;
 import ax.dkarlsso.hottub.service.OperationsService;
 import ax.dkarlsso.hottub.service.RunningTimeService;
 import com.pi4j.io.gpio.GpioFactory;
@@ -17,11 +18,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
+
 @Configuration
 public class HeaterConfiguration {
 
     @Bean
-    public HeaterInterface heaterInterface(@Autowired final OperationsService operationsService) {
+    public HeaterInterface heaterInterface(@Autowired final OperationsService operationsService,
+                                           @Autowired final List<OperationsConfigurator> operationsConfigurators) {
         final HeaterInterface heater;
         if(OSHelper.isRaspberryPi()) {
             final TemperatureSensor returnTemperatureSensor = new DS18B20("28-030c979428d4");
@@ -31,7 +35,7 @@ public class HeaterConfiguration {
             final RelayInterface heatingRelay = new OptoRelay(GPIOPins.GPIO13);
             final RelayInterface circulationRelay = new OptoRelay(GPIOPins.GPIO26);
 
-            heater = new Heater(operationsService, heatingPanSensor, returnTemperatureSensor,
+            heater = new Heater(operationsConfigurators, operationsService, heatingPanSensor, returnTemperatureSensor,
                     heatingRelay, circulationRelay, lightRelay);
             GpioFactory.getInstance();
         }
@@ -39,7 +43,7 @@ public class HeaterConfiguration {
             final TemperatureSensor returnTempSensor = () -> 20.2;
             final TemperatureSensor overTempSensor = () -> 40.2;
             RelayInterface mockRelay = new StubRelay();
-            heater = new Heater(operationsService, overTempSensor, returnTempSensor,
+            heater = new Heater(operationsConfigurators, operationsService, overTempSensor, returnTempSensor,
                     mockRelay, mockRelay, mockRelay);
         }
         return heater;

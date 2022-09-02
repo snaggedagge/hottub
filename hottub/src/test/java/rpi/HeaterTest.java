@@ -1,48 +1,50 @@
 package rpi;
 
+import ax.dkarlsso.hottub.controller.rpi.configurator.CirculationPumpConfigurator;
+import ax.dkarlsso.hottub.controller.rpi.configurator.HeaterConfigurator;
 import ax.dkarlsso.hottub.model.settings.OperationalData;
 import ax.dkarlsso.hottub.model.settings.Settings;
 import ax.dkarlsso.hottub.service.OperationsService;
-import org.easymock.EasyMock;
-import org.easymock.EasyMockRunner;
-import org.easymock.Mock;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import dkarlsso.commons.raspberry.exception.NoConnectionException;
+import dkarlsso.commons.raspberry.relay.StubRelay;
 import dkarlsso.commons.raspberry.relay.interfaces.RelayInterface;
-import dkarlsso.commons.raspberry.sensor.temperature.MAX6675;
 import ax.dkarlsso.hottub.controller.rpi.Heater;
+import dkarlsso.commons.raspberry.sensor.temperature.TemperatureSensor;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-@SuppressWarnings("Duplicates")
-@RunWith(EasyMockRunner.class)
+/**
+ * Dont look at this code, it is older and uglier than time itself
+ */
 public class HeaterTest {
     private final Settings settings = new Settings();
     private final OperationsService operationsService = new OperationsService(settings);
 
-    @Mock
-    RelayInterface relay;
+    private final TemperatureSensor returnTempMax = Mockito.mock(TemperatureSensor.class);
+    private final TemperatureSensor overTempMax = Mockito.mock(TemperatureSensor.class);
+    private Heater heater;
 
-    @Before
+    private final RelayInterface relay = new StubRelay();
+
+    @BeforeEach
     public void setup() {
         settings.setDebug(true);
         operationsService.updateSettings(settings);
         settings.setTemperatureDiff(0);
+        heater = new Heater(List.of(new HeaterConfigurator(), new CirculationPumpConfigurator()),
+                operationsService,overTempMax,returnTempMax,relay,relay,relay);
     }
 
     @Test
-    public void testLowTemp() throws Exception {
-        MAX6675 returnTempMax = EasyMock.mock(MAX6675.class);
-        MAX6675 overTempMax = EasyMock.mock(MAX6675.class);
-        EasyMock.expect(returnTempMax.readTemp()).andStubReturn(25.0);
-        EasyMock.expect(overTempMax.readTemp()).andStubReturn(40.0);
-        EasyMock.replay(overTempMax);
-        EasyMock.replay(returnTempMax);
-        Heater heater = new Heater(operationsService,overTempMax,returnTempMax,relay,relay,relay);
+    public void loop_givenLowReturnTemp_expectHeaterTurnedOn() throws Exception {
+        Mockito.when(returnTempMax.readTemp()).thenReturn(25.0);
+        Mockito.when(overTempMax.readTemp()).thenReturn(40.0);
 
         settings.setReturnTempLimit(37);
         settings.setOverTempLimit(45);
@@ -52,19 +54,14 @@ public class HeaterTest {
         final OperationalData operationalData = operationsService.getOperationalData();
         System.out.println(operationalData.getReturnTemp());
 
-        assertEquals(operationalData.isCirculating(), false);
-        assertEquals(operationalData.isHeating(), true);
+        assertFalse(operationalData.isCirculating());
+        assertTrue(operationalData.isHeating());
     }
 
     @Test
-    public void testHighTemp() throws Exception {
-        MAX6675 returnTempMax = EasyMock.mock(MAX6675.class);
-        MAX6675 overTempMax = EasyMock.mock(MAX6675.class);
-        EasyMock.expect(returnTempMax.readTemp()).andStubReturn(15.0);
-        EasyMock.expect(overTempMax.readTemp()).andStubReturn(15.0);
-        EasyMock.replay(overTempMax);
-        EasyMock.replay(returnTempMax);
-        Heater heater = new Heater(operationsService,overTempMax,returnTempMax,relay,relay,relay);
+    public void loop_givenHighReturnTemp_expectHeaterTurnedOff() throws Exception {
+        Mockito.when(returnTempMax.readTemp()).thenReturn(15.0);
+        Mockito.when(overTempMax.readTemp()).thenReturn(15.0);
 
         settings.setReturnTempLimit(12);
         settings.setOverTempLimit(20);
@@ -73,20 +70,14 @@ public class HeaterTest {
         heater.loop();
         heater.loop();
         final OperationalData operationalData = operationsService.getOperationalData();
-        assertEquals(operationalData.isCirculating(), false);
-        assertEquals(operationalData.isHeating(), false);
+        assertFalse(operationalData.isCirculating());
+        assertFalse(operationalData.isHeating());
     }
 
     @Test
     public void testHighOverTemp() throws Exception {
-
-        MAX6675 returnTempMax = EasyMock.mock(MAX6675.class);
-        MAX6675 overTempMax = EasyMock.mock(MAX6675.class);
-        EasyMock.expect(returnTempMax.readTemp()).andStubReturn(36.0);
-        EasyMock.expect(overTempMax.readTemp()).andStubReturn(58.0);
-        EasyMock.replay(overTempMax);
-        EasyMock.replay(returnTempMax);
-        Heater heater = new Heater(operationsService,overTempMax,returnTempMax,relay,relay,relay);
+        Mockito.when(returnTempMax.readTemp()).thenReturn(36.0);
+        Mockito.when(overTempMax.readTemp()).thenReturn(58.0);
 
         settings.setReturnTempLimit(37);
         settings.setOverTempLimit(45);
@@ -94,21 +85,15 @@ public class HeaterTest {
 
         heater.loop();
         final OperationalData operationalData = operationsService.getOperationalData();
-        assertEquals(true, operationalData.isCirculating());
-        assertEquals(true, operationalData.isHeating());
+        assertTrue(operationalData.isCirculating());
+        assertTrue(operationalData.isHeating());
     }
 
     //@Ignore
     @Test
     public void testOverTempNoSignal() throws Exception {
-
-        MAX6675 returnTempMax = EasyMock.mock(MAX6675.class);
-        MAX6675 overTempMax = EasyMock.mock(MAX6675.class);
-        EasyMock.expect(returnTempMax.readTemp()).andStubReturn(37.0);
-        EasyMock.expect(overTempMax.readTemp()).andThrow(new NoConnectionException());
-        EasyMock.replay(overTempMax);
-        EasyMock.replay(returnTempMax);
-        Heater heater = new Heater(operationsService,overTempMax,returnTempMax,relay,relay,relay);
+        Mockito.when(returnTempMax.readTemp()).thenReturn(37.0);
+        Mockito.when(overTempMax.readTemp()).thenThrow(new NoConnectionException());
 
         settings.setReturnTempLimit(35);
         settings.setOverTempLimit(45);
@@ -116,20 +101,15 @@ public class HeaterTest {
 
         heater.loop();
         final OperationalData operationalData = operationsService.getOperationalData();
-        assertEquals(operationalData.isCirculating(), false);
-        assertEquals(operationalData.isHeating(), false);
+        assertFalse(operationalData.isCirculating());
+        assertFalse(operationalData.isHeating());
     }
 
     //@Ignore
     @Test
     public void testRetTempNoSignal() throws Exception {
-        MAX6675 returnTempMax = EasyMock.mock(MAX6675.class);
-        MAX6675 overTempMax = EasyMock.mock(MAX6675.class);
-        EasyMock.expect(returnTempMax.readTemp()).andThrow(new NoConnectionException());
-        EasyMock.expect(overTempMax.readTemp()).andStubReturn(59.0);
-        EasyMock.replay(overTempMax);
-        EasyMock.replay(returnTempMax);
-        Heater heater = new Heater(operationsService,overTempMax,returnTempMax,relay,relay,relay);
+        Mockito.when(returnTempMax.readTemp()).thenThrow(new NoConnectionException());
+        Mockito.when(overTempMax.readTemp()).thenReturn(59.0);
 
         settings.setReturnTempLimit(35);
         settings.setOverTempLimit(45);
@@ -137,19 +117,14 @@ public class HeaterTest {
 
         heater.loop();
         final OperationalData operationalData = operationsService.getOperationalData();
-        assertEquals(operationalData.isCirculating(), false);
-        assertEquals(operationalData.isHeating(), false);
+        assertFalse(operationalData.isCirculating());
+        assertFalse(operationalData.isHeating());
     }
 
     @Test
-    public void testHighOverTemp2() throws Exception {
-        MAX6675 returnTempMax = EasyMock.mock(MAX6675.class);
-        MAX6675 overTempMax = EasyMock.mock(MAX6675.class);
-        EasyMock.expect(returnTempMax.readTemp()).andStubReturn(30.0);
-        EasyMock.expect(overTempMax.readTemp()).andStubReturn(80.0);
-        EasyMock.replay(overTempMax);
-        EasyMock.replay(returnTempMax);
-        Heater heater = new Heater(operationsService,overTempMax,returnTempMax,relay,relay,relay);
+    public void loop_givenCriticallyHighCirculationPumpValues_expectPumpTurnedOff() throws Exception {
+        Mockito.when(returnTempMax.readTemp()).thenReturn(30.0);
+        Mockito.when(overTempMax.readTemp()).thenReturn(80.0);
 
         settings.setReturnTempLimit(35);
         settings.setOverTempLimit(45);
@@ -157,19 +132,14 @@ public class HeaterTest {
 
         heater.loop();
         final OperationalData operationalData = operationsService.getOperationalData();
-        assertEquals(operationalData.isCirculating(), true);
-        assertEquals(operationalData.isHeating(), false);
+        assertTrue(operationalData.isCirculating());
+        assertFalse(operationalData.isHeating());
     }
 
     @Test
     public void testHeatingCirculating() throws Exception {
-        MAX6675 returnTempMax = EasyMock.mock(MAX6675.class);
-        MAX6675 overTempMax = EasyMock.mock(MAX6675.class);
-        EasyMock.expect(returnTempMax.readTemp()).andStubReturn(30.0);
-        EasyMock.expect(overTempMax.readTemp()).andStubReturn(55.0);
-        EasyMock.replay(overTempMax);
-        EasyMock.replay(returnTempMax);
-        Heater heater = new Heater(operationsService,overTempMax,returnTempMax,relay,relay,relay);
+        Mockito.when(returnTempMax.readTemp()).thenReturn(30.0);
+        Mockito.when(overTempMax.readTemp()).thenReturn(55.0);
 
         settings.setReturnTempLimit(37);
         settings.setOverTempLimit(45);
@@ -177,19 +147,15 @@ public class HeaterTest {
 
         heater.loop();
         final OperationalData operationalData = operationsService.getOperationalData();
-        assertEquals(operationalData.isCirculating(), true);
-        assertEquals(operationalData.isHeating(), true);
+        assertTrue(operationalData.isCirculating());
+        assertTrue(operationalData.isHeating());
     }
 
     @Test
     public void testDeltaTemp() throws Exception {
-        MAX6675 returnTempMax = mock(MAX6675.class);
-        MAX6675 overTempMax = mock(MAX6675.class);
-
         when(returnTempMax.readTemp()).thenReturn(35.0);
         when(overTempMax.readTemp()).thenReturn(42.0);
 
-        Heater heater = new Heater(operationsService,overTempMax,returnTempMax,relay,relay,relay);
         settings.setReturnTempLimit(37);
         settings.setOverTempLimit(42);
         operationsService.updateSettings(settings);
@@ -197,43 +163,38 @@ public class HeaterTest {
         heater.loop();
 
         OperationalData operationalData = operationsService.getOperationalData();
-        assertEquals(operationalData.isCirculating(), false);
-        assertEquals(operationalData.isHeating(), true);
+        assertFalse(operationalData.isCirculating());
+        assertTrue(operationalData.isHeating());
 
         when(returnTempMax.readTemp()).thenReturn(36.0);
         when(overTempMax.readTemp()).thenReturn(43.0);
         heater.loop();
 
         operationalData = operationsService.getOperationalData();
-        assertEquals(operationalData.isCirculating(), true);
-        assertEquals(operationalData.isHeating(), true);
+        assertTrue(operationalData.isCirculating());
+        assertTrue(operationalData.isHeating());
 
         when(returnTempMax.readTemp()).thenReturn(37.0);
         when(overTempMax.readTemp()).thenReturn(44.0);
         heater.loop();
 
         operationalData = operationsService.getOperationalData();
-        assertEquals(operationalData.isCirculating(), true);
-        assertEquals(operationalData.isHeating(), false);
+        assertTrue(operationalData.isCirculating());
+        assertFalse(operationalData.isHeating());
 
         when(returnTempMax.readTemp()).thenReturn(36.0);
         when(overTempMax.readTemp()).thenReturn(42.0);
         heater.loop();
         operationalData = operationsService.getOperationalData();
-        assertEquals(operationalData.isCirculating(), true);
-        assertEquals(operationalData.isHeating(), false);
+        assertTrue(operationalData.isCirculating());
+        assertFalse(operationalData.isHeating());
     }
 
 
     @Test
-    public void testReset() throws Exception {
-        MAX6675 returnTempMax = EasyMock.mock(MAX6675.class);
-        MAX6675 overTempMax = EasyMock.mock(MAX6675.class);
-        EasyMock.expect(returnTempMax.readTemp()).andStubReturn(37.0);
-        EasyMock.expect(overTempMax.readTemp()).andStubReturn(45.0);
-        EasyMock.replay(overTempMax);
-        EasyMock.replay(returnTempMax);
-        Heater heater = new Heater(operationsService,overTempMax,returnTempMax,relay,relay,relay);
+    public void loop_givenCriticallyHighValues_expectHeaterTurnedOff() throws Exception {
+        Mockito.when(returnTempMax.readTemp()).thenReturn(37.0);
+        Mockito.when(overTempMax.readTemp()).thenReturn(45.0);
 
         settings.setReturnTempLimit(8);
         settings.setOverTempLimit(25);
@@ -241,40 +202,29 @@ public class HeaterTest {
         heater.loop();
 
         final OperationalData operationalData = operationsService.getOperationalData();
-        assertEquals(operationalData.isCirculating(), false);
-        assertEquals(operationalData.isHeating(), false);
+        assertFalse(operationalData.isHeating());
     }
 
     @Test
-    public void testReset2() throws Exception {
-        MAX6675 returnTempMax = EasyMock.mock(MAX6675.class);
-        MAX6675 overTempMax = EasyMock.mock(MAX6675.class);
-        EasyMock.expect(returnTempMax.readTemp()).andStubReturn(25.0);
-        EasyMock.expect(overTempMax.readTemp()).andStubReturn(25.0);
-        EasyMock.replay(overTempMax);
-        EasyMock.replay(returnTempMax);
-        Heater heater = new Heater(operationsService,overTempMax,returnTempMax,relay,relay,relay);
+    public void loop_givenAbnormalReturnTemp_expectHeaterTurnedOff() throws Exception {
+        Mockito.when(returnTempMax.readTemp()).thenReturn(25.0);
+        Mockito.when(overTempMax.readTemp()).thenReturn(25.0);
 
         settings.setReturnTempLimit(8);
-        settings.setOverTempLimit(23);
+        settings.setOverTempLimit(27);
         operationsService.updateSettings(settings);
         heater.loop();
 
         final OperationalData operationalData = operationsService.getOperationalData();
-        assertEquals(operationalData.isCirculating(), false);
-        assertEquals(operationalData.isHeating(), false);
+        assertFalse(operationalData.isCirculating());
+        assertFalse(operationalData.isHeating());
     }
 
 
     @Test
     public void testTemperatureDiffNotHeating() throws Exception {
-        MAX6675 returnTempMax = EasyMock.mock(MAX6675.class);
-        MAX6675 overTempMax = EasyMock.mock(MAX6675.class);
-        EasyMock.expect(returnTempMax.readTemp()).andStubReturn(35.0);
-        EasyMock.expect(overTempMax.readTemp()).andStubReturn(44.0);
-        EasyMock.replay(overTempMax);
-        EasyMock.replay(returnTempMax);
-        Heater heater = new Heater(operationsService,overTempMax,returnTempMax,relay,relay,relay);
+        Mockito.when(returnTempMax.readTemp()).thenReturn(35.0);
+        Mockito.when(overTempMax.readTemp()).thenReturn(44.0);
 
         // 35 + 3 = 38 == should not heat
         settings.setTemperatureDiff(3);
@@ -285,18 +235,13 @@ public class HeaterTest {
 
         final OperationalData operationalData = operationsService.getOperationalData();
         assertEquals(38, operationalData.getReturnTemp());
-        assertEquals(operationalData.isHeating(), false);
+        assertFalse(operationalData.isHeating());
     }
 
     @Test
     public void testTemperatureDiffHeating() throws Exception {
-        MAX6675 returnTempMax = EasyMock.mock(MAX6675.class);
-        MAX6675 overTempMax = EasyMock.mock(MAX6675.class);
-        EasyMock.expect(returnTempMax.readTemp()).andStubReturn(33.0);
-        EasyMock.expect(overTempMax.readTemp()).andStubReturn(44.0);
-        EasyMock.replay(overTempMax);
-        EasyMock.replay(returnTempMax);
-        Heater heater = new Heater(operationsService,overTempMax,returnTempMax,relay,relay,relay);
+        Mockito.when(returnTempMax.readTemp()).thenReturn(33.0);
+        Mockito.when(overTempMax.readTemp()).thenReturn(44.0);
 
         // 33 + 3 = 36 == should heat
         settings.setTemperatureDiff(3);
@@ -307,6 +252,6 @@ public class HeaterTest {
 
         final OperationalData operationalData = operationsService.getOperationalData();
         assertEquals(36, operationalData.getReturnTemp());
-        assertEquals(operationalData.isHeating(), true);
+        assertTrue(operationalData.isHeating());
     }
 }
