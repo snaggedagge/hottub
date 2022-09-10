@@ -31,32 +31,16 @@ import java.util.concurrent.TimeUnit;
 @EnableScheduling
 public class WebConfig implements WebMvcConfigurer {
 
-    private final ConnectionLoggerInterceptor connectionLoggerInterceptor = new ConnectionLoggerInterceptor();
-
-    private final SettingsFilesystemRepository<Settings> settingsRepository;
-
-    private final OperationsService operationsService;
-
-    @Autowired
-    public WebConfig() {
-        if (OSHelper.isRaspberryPi()) {
-            GpioFactory.getInstance();
-        }
-        this.settingsRepository = new SettingsFilesystemRepository<>(Settings.class, OSHelper.isRaspberryPi()
-                ? "/var/bath/bathtub-settings.json"
-                : "C:\\Users\\dag-k\\bathtub-settings.json", Settings::new);
-
-        this.operationsService = new OperationsService(settingsRepository.read());
-    }
-
     @Bean
-    public OperationsService operationsService(){
-        return operationsService;
+    public OperationsService operationsService(final SettingsFilesystemRepository<Settings> settingsRepository){
+        return new OperationsService(settingsRepository);
     }
 
     @Bean
     public SettingsFilesystemRepository<Settings> settingsFileDataRepository(){
-        return settingsRepository;
+        return new SettingsFilesystemRepository<>(Settings.class, OSHelper.isRaspberryPi()
+                ? "/var/bath/bathtub-settings.json"
+                : "C:\\Users\\dag-k\\bathtub-settings.json", Settings::new);
     }
 
     @Profile("internet-access")
@@ -124,6 +108,6 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         //log.info("Adding interceptor");
-        registry.addInterceptor(connectionLoggerInterceptor);
+        registry.addInterceptor(new ConnectionLoggerInterceptor());
     }
 }

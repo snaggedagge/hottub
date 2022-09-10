@@ -1,4 +1,4 @@
-<mat-card class="center content">
+<mat-card class="center content" *ngIf="stats">
   <mat-card-title>Stats</mat-card-title>
   <mat-card-content class="row">
     <mat-card class="inner">
@@ -34,7 +34,7 @@
 <br>
 
 
-<mat-card class="center content">
+<mat-card class="center content" *ngIf="setting">
   <mat-card-title>Settings</mat-card-title>
   <mat-card-content class="row">
     <form [formGroup]="settingsForm" class="row">

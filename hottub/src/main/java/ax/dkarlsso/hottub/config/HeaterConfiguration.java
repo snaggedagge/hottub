@@ -15,6 +15,7 @@ import dkarlsso.commons.raspberry.relay.interfaces.RelayInterface;
 import dkarlsso.commons.raspberry.sensor.temperature.DS18B20;
 import dkarlsso.commons.raspberry.sensor.temperature.TemperatureSensor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -23,28 +24,54 @@ import java.util.List;
 @Configuration
 public class HeaterConfiguration {
 
+    @Bean("heatingRelay")
+    public RelayInterface heatingRelay() {
+        if(OSHelper.isRaspberryPi()) {
+            return new OptoRelay(GPIOPins.GPIO13);
+        }
+        else {
+            return new StubRelay();
+        }
+    }
+
+    @Bean("circulationRelay")
+    public RelayInterface circulationRelay() {
+        if(OSHelper.isRaspberryPi()) {
+            return new OptoRelay(GPIOPins.GPIO26);
+        }
+        else {
+            return new StubRelay();
+        }
+    }
+
+    @Bean("lightRelay")
+    public RelayInterface lightRelay() {
+        if(OSHelper.isRaspberryPi()) {
+            return new OptoRelay(GPIOPins.GPIO19);
+        }
+        else {
+            return new StubRelay();
+        }
+    }
+
     @Bean
     public HeaterInterface heaterInterface(@Autowired final OperationsService operationsService,
-                                           @Autowired final List<OperationsConfigurator> operationsConfigurators) {
+                                           @Autowired final List<OperationsConfigurator> operationsConfigurators,
+                                           @Qualifier("circulationRelay") final RelayInterface circulationRelay,
+                                           @Qualifier("heatingRelay") final RelayInterface heatingRelay) {
         final HeaterInterface heater;
         if(OSHelper.isRaspberryPi()) {
             final TemperatureSensor returnTemperatureSensor = new DS18B20("28-030c979428d4");
             final TemperatureSensor heatingPanSensor = new DS18B20("28-030297942385");
-
-            final RelayInterface lightRelay = new OptoRelay(GPIOPins.GPIO19);
-            final RelayInterface heatingRelay = new OptoRelay(GPIOPins.GPIO13);
-            final RelayInterface circulationRelay = new OptoRelay(GPIOPins.GPIO26);
-
             heater = new Heater(operationsConfigurators, operationsService, heatingPanSensor, returnTemperatureSensor,
-                    heatingRelay, circulationRelay, lightRelay);
+                    heatingRelay, circulationRelay);
             GpioFactory.getInstance();
         }
         else {
             final TemperatureSensor returnTempSensor = () -> 20.2;
             final TemperatureSensor overTempSensor = () -> 40.2;
-            RelayInterface mockRelay = new StubRelay();
             heater = new Heater(operationsConfigurators, operationsService, overTempSensor, returnTempSensor,
-                    mockRelay, mockRelay, mockRelay);
+                    heatingRelay, circulationRelay);
         }
         return heater;
     }

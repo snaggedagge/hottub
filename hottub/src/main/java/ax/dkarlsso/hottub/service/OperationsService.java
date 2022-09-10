@@ -3,12 +3,10 @@ package ax.dkarlsso.hottub.service;
 import ax.dkarlsso.hottub.model.settings.OperationalData;
 import ax.dkarlsso.hottub.model.settings.Settings;
 import ax.dkarlsso.hottub.model.settings.TimerSettings;
+import dkarlsso.commons.repository.settings.SettingsFilesystemRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -24,8 +22,11 @@ public class OperationsService {
     /** Actions that should be performed when settings has changed */
     private final List<Runnable> settingsChangedActions = new ArrayList<>();
 
-    public OperationsService(final Settings settings) {
-        this.settings = settings;
+    private final SettingsFilesystemRepository<Settings> settingsRepository;
+
+    public OperationsService(final SettingsFilesystemRepository<Settings> settingsRepository) {
+        this.settings = settingsRepository.read();
+        this.settingsRepository = settingsRepository;
     }
 
     public Settings getSettings() {
@@ -38,6 +39,7 @@ public class OperationsService {
         synchronized (this) {
             this.settings.applySettings(settings);
             settingsChangedActions.forEach(Runnable::run);
+            settingsRepository.save(this.settings);
         }
     }
 

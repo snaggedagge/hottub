@@ -37,8 +37,8 @@ public class HeaterTest {
         settings.setDebug(true);
         operationsService.updateSettings(settings);
         settings.setTemperatureDiff(0);
-        heater = new Heater(List.of(new HeaterConfigurator(), new CirculationPumpConfigurator()),
-                operationsService,overTempMax,returnTempMax,relay,relay,relay);
+        heater = new Heater(List.of(new HeaterConfigurator(new StubRelay()), new CirculationPumpConfigurator(new StubRelay())),
+                operationsService,overTempMax,returnTempMax,relay,relay);
     }
 
     @Test

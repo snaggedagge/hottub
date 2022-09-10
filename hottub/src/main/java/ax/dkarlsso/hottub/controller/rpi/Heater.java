@@ -24,7 +24,6 @@ public class Heater implements HeaterInterface {
 
     private final RelayInterface circulationRelay;
     private final RelayInterface heatingRelay;
-    private final RelayInterface lightRelay;
 
     private final TemperatureSensor heatingPanSensor;
     private final TemperatureSensor returnTemperatureSensor;
@@ -45,15 +44,13 @@ public class Heater implements HeaterInterface {
                   final TemperatureSensor overTemp,
                   final TemperatureSensor returnTemp,
                   final RelayInterface heatingRelay,
-                  final RelayInterface circulationRelay,
-                  final RelayInterface lightRelay) {
+                  final RelayInterface circulationRelay) {
         this.operationsConfigurators = operationsConfigurators;
         this.heatingPanSensor = overTemp;
         this.returnTemperatureSensor = returnTemp;
 
         this.circulationRelay = circulationRelay;
         this.heatingRelay = heatingRelay;
-        this.lightRelay = lightRelay;
         this.operationsService = operationsService;
     }
 
@@ -73,10 +70,8 @@ public class Heater implements HeaterInterface {
         }
         catch (final Exception e) {
             log.error("Turning off everything due to: " + e.getMessage(), e);
-            turnAllOff(settings, operationalData);
+            turnAllOff(operationalData);
         }
-        setPhysicalOutput(settings, operationalData);
-
         operationsService.updateOperationalData(operationalData);
         if(settings.isDebug()) {
             log.debug("Real temperature is {} and heating element temperature is {}",
@@ -86,23 +81,11 @@ public class Heater implements HeaterInterface {
         }
     }
 
-    private void turnAllOff(final Settings settings,
-                            final OperationalData operationalData){
+    private void turnAllOff(final OperationalData operationalData){
         operationalData.setHeating(false);
         operationalData.setCirculating(false);
-        setPhysicalOutput(settings, operationalData);
-        log.error("Turning off everything");
-    }
-
-    private void setPhysicalOutput(final Settings settings, final OperationalData operationalData) {
         heatingRelay.setState(operationalData.isHeating());
         circulationRelay.setState(operationalData.isCirculating());
-        lightRelay.setState(settings.isLightsOn());
-        if(settings.isDebug()) {
-            log.debug("Heating {}", operationalData.isHeating());
-            log.debug("Circulating {}", operationalData.isCirculating());
-            log.debug("Circulating based on timer {}", operationalData.isCirculateBasedOnTimer());
-            log.debug("Lights {}", settings.isLightsOn());
-        }
+        log.error("Turning off everything");
     }
 }

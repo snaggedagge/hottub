@@ -3,8 +3,10 @@ package ax.dkarlsso.hottub.controller.rpi.configurator;
 import ax.dkarlsso.hottub.model.settings.OperationalData;
 import ax.dkarlsso.hottub.model.settings.Settings;
 import ax.dkarlsso.hottub.utils.TimeElapsedTimer;
+import dkarlsso.commons.raspberry.relay.interfaces.RelayInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +23,12 @@ public class CirculationPumpConfigurator implements OperationsConfigurator {
 
     private final TimeElapsedTimer timer = new TimeElapsedTimer();
 
+    private final RelayInterface circulationRelay;
+
+    public CirculationPumpConfigurator(@Qualifier("circulationRelay") final RelayInterface circulationRelay) {
+        this.circulationRelay = circulationRelay;
+    }
+
 
     @Override
     public void configure(final OperationalData operationalData,
@@ -33,8 +41,14 @@ public class CirculationPumpConfigurator implements OperationsConfigurator {
             circulationTemperatureDelta = 0;
             operationalData.setCirculating(false);
         }
-        operationalData.setCirculateBasedOnTimer(this.shouldCirculateOnTimer(settings));
-        operationalData.setCirculating(operationalData.isCirculating() || operationalData.isCirculateBasedOnTimer());
+        boolean circulateBasedOnTimer = this.shouldCirculateOnTimer(settings);
+        operationalData.setCirculating(operationalData.isCirculating() || circulateBasedOnTimer);
+
+        circulationRelay.setState(operationalData.isCirculating());
+        if(settings.isDebug()) {
+            log.debug("Circulating {}", operationalData.isCirculating());
+            log.debug("Circulating based on timer {}", circulateBasedOnTimer);
+        }
     }
 
     private boolean shouldCirculateOnTimer(final Settings settings) {

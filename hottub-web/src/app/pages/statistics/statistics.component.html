@@ -1,4 +1,4 @@
-<mat-card class="center content">
+<mat-card class="center content" *ngIf="statisticsDataSource">
   <mat-card-title>Statistics</mat-card-title>
   <mat-card-content>
     <table mat-table [dataSource]="statisticsDataSource">
@@ -30,7 +30,7 @@
 </mat-card>
 
 <br>
-<mat-card class="center content">
+<mat-card class="center content" *ngIf="events">
   <mat-card-title>Statistics</mat-card-title>
   <mat-card-content>
 

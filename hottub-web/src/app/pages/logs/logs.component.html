@@ -1,4 +1,4 @@
-<mat-card class="center content">
+<mat-card class="center content" *ngIf="logEntries">
   <mat-card-title>Logs</mat-card-title>
   <mat-card-content>
     <ng-container *ngFor="let row of logEntries?.rows">

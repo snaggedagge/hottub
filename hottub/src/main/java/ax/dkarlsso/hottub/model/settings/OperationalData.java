@@ -20,8 +20,6 @@ public class OperationalData {
 
     private boolean circulating;
 
-    private boolean circulateBasedOnTimer;
-
     private Duration heaterTimeSinceStarted;
 
 
@@ -30,7 +28,6 @@ public class OperationalData {
         this.overTemp = operationalData.overTemp;
         this.heating = operationalData.heating;
         this.circulating = operationalData.circulating;
-        this.circulateBasedOnTimer = operationalData.circulateBasedOnTimer;
         this.heaterTimeSinceStarted = operationalData.heaterTimeSinceStarted;
     }
 

@@ -1,5 +1,7 @@
 package ax.dkarlsso.hottub.model.settings;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -82,5 +84,15 @@ public class Settings {
         else {
             throw new IllegalArgumentException("Invalid bounds of time, value in minutes: " + circulationTimeCycle.toMinutes());
         }
+    }
+
+    @JsonGetter("circulationTimeCycle")
+    public int getCirculationTimeCycleMinutes() {
+        return (int) circulationTimeCycle.toMinutes();
+    }
+
+    @JsonSetter("circulationTimeCycle")
+    public void getCirculationTimeCycleMinutes(final int circulationTimeCycle) {
+        this.circulationTimeCycle = Duration.ofMinutes(circulationTimeCycle);
     }
 }
