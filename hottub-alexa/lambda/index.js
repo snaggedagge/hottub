@@ -15,7 +15,7 @@ async function getAddress() {
     await axios.get('http://dkarlsso.com/data/websites.json')
       .then(websitesResponse => {
         const hottubData = websitesResponse.data.find(function(value, index) {
-          return value.websiteId === 'hottub';
+          return value.websiteId === 'ax/dkarlsso/hottub';
         });
         console.log(`Link to hottub is : ${hottubData.websiteLink}`);
         address = hottubData.websiteLink;

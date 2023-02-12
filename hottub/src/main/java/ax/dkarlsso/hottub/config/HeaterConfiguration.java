@@ -61,11 +61,11 @@ public class HeaterConfiguration {
                                            @Qualifier("heatingRelay") final RelayInterface heatingRelay) {
         final HeaterInterface heater;
         if(OSHelper.isRaspberryPi()) {
+            GpioFactory.getInstance();
             final TemperatureSensor returnTemperatureSensor = new DS18B20("28-030c979428d4");
             final TemperatureSensor heatingPanSensor = new DS18B20("28-030297942385");
             heater = new Heater(operationsConfigurators, operationsService, heatingPanSensor, returnTemperatureSensor,
                     heatingRelay, circulationRelay);
-            GpioFactory.getInstance();
         }
         else {
             final TemperatureSensor returnTempSensor = () -> 20.2;

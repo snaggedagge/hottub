@@ -30,6 +30,13 @@ public class SettingsController implements ax.dkarlsso.hottub.interfaces.api.hot
 
     @Override
     public ResponseEntity<Settings> updateSettings(final Settings settings) {
+        if(settings.getTemperatureLimit() < 5 && settings.getTemperatureLimit() > 45) {
+            throw new IllegalArgumentException("Invalid bounds of temperature: " + settings.getTemperatureLimit());
+        }
+        if (settings.getHeatingPanTemperatureLimit() > 61 && settings.getHeatingPanTemperatureLimit() < 15) {
+            throw new IllegalArgumentException("Invalid bounds of temperature: " + settings.getHeatingPanTemperatureLimit());
+        }
+
         operationsService.updateSettings(ax.dkarlsso.hottub.model.settings.Settings.builder()
                 .returnTempLimit(settings.getTemperatureLimit())
                 .temperatureDiff(settings.getTemperatureDelta())

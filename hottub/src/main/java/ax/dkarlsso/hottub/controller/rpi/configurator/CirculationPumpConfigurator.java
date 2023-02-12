@@ -29,18 +29,12 @@ public class CirculationPumpConfigurator implements OperationsConfigurator {
         this.circulationRelay = circulationRelay;
     }
 
-
     @Override
     public void configure(final OperationalData operationalData,
                           final Settings settings) {
-        if(operationalData.getOverTemp() + circulationTemperatureDelta > settings.getOverTempLimit())
-        {
-            circulationTemperatureDelta = 3;
-            operationalData.setCirculating(true);
-        } else {
-            circulationTemperatureDelta = 0;
-            operationalData.setCirculating(false);
-        }
+        // With new circulating pump, always circulate when heating
+        operationalData.setCirculating(operationalData.isHeating());
+
         boolean circulateBasedOnTimer = this.shouldCirculateOnTimer(settings);
         operationalData.setCirculating(operationalData.isCirculating() || circulateBasedOnTimer);
 
@@ -61,4 +55,27 @@ public class CirculationPumpConfigurator implements OperationsConfigurator {
         }
         return false;
     }
+
+    /*
+        @Override
+    public void configure(final OperationalData operationalData,
+                          final Settings settings) {
+        if(operationalData.getOverTemp() + circulationTemperatureDelta > settings.getOverTempLimit())
+        {
+            circulationTemperatureDelta = 3;
+            operationalData.setCirculating(true);
+        } else {
+            circulationTemperatureDelta = 0;
+            operationalData.setCirculating(false);
+        }
+        boolean circulateBasedOnTimer = this.shouldCirculateOnTimer(settings);
+        operationalData.setCirculating(operationalData.isCirculating() || circulateBasedOnTimer);
+
+        circulationRelay.setState(operationalData.isCirculating());
+        if(settings.isDebug()) {
+            log.debug("Circulating {}", operationalData.isCirculating());
+            log.debug("Circulating based on timer {}", circulateBasedOnTimer);
+        }
+    }
+     */
 }

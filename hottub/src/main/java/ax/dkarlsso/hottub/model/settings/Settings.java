@@ -60,30 +60,15 @@ public class Settings {
     }
 
     public void setReturnTempLimit(final int returnTempLimit) {
-        if(returnTempLimit > 5 && returnTempLimit < 45) {
-            this.returnTempLimit = returnTempLimit;
-        }
-        else {
-            throw new IllegalArgumentException("Invalid bounds of temperature: " + returnTempLimit);
-        }
+        this.returnTempLimit = returnTempLimit;
     }
 
     public void setOverTempLimit(final int overTempLimit) {
-        if (overTempLimit < 61 && overTempLimit > 15) {
-            this.overTempLimit = overTempLimit;
-        }
-        else {
-            throw new IllegalArgumentException("Invalid bounds of temperature: " + overTempLimit);
-        }
+        this.overTempLimit = overTempLimit;
     }
 
     public void setCirculationTimeCycle(final Duration circulationTimeCycle) {
-        if (circulationTimeCycle.toMinutes() > 2 && circulationTimeCycle.toMinutes() < 120) {
-            this.circulationTimeCycle = circulationTimeCycle;
-        }
-        else {
-            throw new IllegalArgumentException("Invalid bounds of time, value in minutes: " + circulationTimeCycle.toMinutes());
-        }
+        this.circulationTimeCycle = circulationTimeCycle;
     }
 
     @JsonGetter("circulationTimeCycle")

@@ -1,13 +1,15 @@
 server.port: 80
 spring:
-  profiles:
-      #active: internet-access
   jackson:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
       WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS: false
     deserialization:
       READ_DATE_TIMESTAMPS_AS_NANOSECONDS: false
+  config:
+    activate:
+      on-profile:
+      #internet-access
 dkarlsso.security.jwt:
   subject: Hottub Time Machine
   baseURL: http://webportal.dkarlsso.com
