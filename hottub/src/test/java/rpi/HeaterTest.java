@@ -80,23 +80,7 @@ public class HeaterTest {
     }
 
     @Test
-    public void testHighOverTemp() throws Exception {
-        Mockito.when(returnTempMax.readTemp()).thenReturn(36.0);
-        Mockito.when(overTempMax.readTemp()).thenReturn(58.0);
-
-        settings.setHottubTemperatureLimit(37);
-        settings.setHeaterTemperatureLimit(45);
-        operationsService.updateSettings(settings);
-
-        heater.loop();
-        final OperationalData operationalData = operationsService.getOperationalData();
-        assertTrue(operationalData.isCirculating());
-        assertTrue(operationalData.isHeating());
-    }
-
-    //@Ignore
-    @Test
-    public void testOverTempNoSignal() throws Exception {
+    public void loop_givenNoSignalFromHeaterSensor_expectHeaterTurnedOff() throws Exception {
         Mockito.when(returnTempMax.readTemp()).thenReturn(37.0);
         Mockito.when(overTempMax.readTemp()).thenThrow(new NoConnectionException());
 
@@ -110,9 +94,23 @@ public class HeaterTest {
         assertFalse(operationalData.isHeating());
     }
 
-    //@Ignore
     @Test
-    public void testRetTempNoSignal() throws Exception {
+    public void loop_givenHighTemperatureInHeater_expectCirculationPumpOn() throws Exception {
+        Mockito.when(returnTempMax.readTemp()).thenReturn(36.0);
+        Mockito.when(overTempMax.readTemp()).thenReturn(58.0);
+
+        settings.setHottubTemperatureLimit(37);
+        settings.setHeaterTemperatureLimit(45);
+        operationsService.updateSettings(settings);
+
+        heater.loop();
+        final OperationalData operationalData = operationsService.getOperationalData();
+        assertTrue(operationalData.isCirculating());
+        assertTrue(operationalData.isHeating());
+    }
+
+    @Test
+    public void loop_givenNoSignalFromHotTubSensor_expectHeaterTurnedOff() throws Exception {
         Mockito.when(returnTempMax.readTemp()).thenThrow(new NoConnectionException());
         Mockito.when(overTempMax.readTemp()).thenReturn(59.0);
 
@@ -127,7 +125,7 @@ public class HeaterTest {
     }
 
     @Test
-    public void testHeatingCirculating() throws Exception {
+    public void loop_whenHeaterTemperatureAreOverLimit_expectCirculationPumpTurnedOn() throws Exception {
         Mockito.when(returnTempMax.readTemp()).thenReturn(30.0);
         Mockito.when(overTempMax.readTemp()).thenReturn(55.0);
 
@@ -215,8 +213,8 @@ public class HeaterTest {
     }
 
 
-    @Test
-    public void testTemperatureDiffNotHeating() throws Exception {
+    @Test // Temperature diff is the fact that the top of the water might be 2 - 3 degrees higher than the bottom where the sensor is
+    public void loop_withHighTemperatureDiff_assertItIsTakenIntoConsideration() throws Exception {
         Mockito.when(returnTempMax.readTemp()).thenReturn(35.0);
         Mockito.when(overTempMax.readTemp()).thenReturn(44.0);
 
@@ -232,8 +230,8 @@ public class HeaterTest {
         assertFalse(operationalData.isHeating());
     }
 
-    @Test
-    public void testTemperatureDiffHeating() throws Exception {
+    @Test // Temperature diff is the fact that the top of the water might be 2 - 3 degrees higher than the bottom where the sensor is
+    public void loop_withHighTemperatureDiff_assertHeaterisHeatingWhenBelowTemperature() throws Exception {
         Mockito.when(returnTempMax.readTemp()).thenReturn(33.0);
         Mockito.when(overTempMax.readTemp()).thenReturn(44.0);
 
