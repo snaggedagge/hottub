@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Duration;
-
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,15 +18,11 @@ public class OperationalData {
 
     private boolean circulating;
 
-    private Duration heaterTimeSinceStarted;
-
-
     public void apply(final OperationalData operationalData) {
         this.returnTemp = operationalData.returnTemp;
         this.overTemp = operationalData.overTemp;
         this.heating = operationalData.heating;
         this.circulating = operationalData.circulating;
-        this.heaterTimeSinceStarted = operationalData.heaterTimeSinceStarted;
     }
 
     @Override
@@ -36,7 +30,6 @@ public class OperationalData {
         return OperationalData.builder()
                 .circulating(this.isCirculating())
                 .heating(this.isHeating())
-                .heaterTimeSinceStarted(this.getHeaterTimeSinceStarted())
                 .overTemp(this.getOverTemp())
                 .returnTemp(this.getReturnTemp())
                 .build();

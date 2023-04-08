@@ -5,7 +5,6 @@ import ax.dkarlsso.hottub.controller.rpi.HeaterInterface;
 import ax.dkarlsso.hottub.controller.rpi.HeaterThread;
 import ax.dkarlsso.hottub.controller.rpi.configurator.OperationsConfigurator;
 import ax.dkarlsso.hottub.service.OperationsService;
-import ax.dkarlsso.hottub.service.RunningTimeService;
 import com.pi4j.io.gpio.GpioFactory;
 import dkarlsso.commons.raspberry.OSHelper;
 import dkarlsso.commons.raspberry.enums.GPIOPins;
@@ -78,10 +77,9 @@ public class HeaterConfiguration {
 
     @Bean
     public HeaterThread heaterThread(@Autowired final OperationsService operationsService,
-                                     @Autowired final RunningTimeService runningTimeService,
                                      @Autowired final HeaterInterface heaterInterface) {
         final HeaterThread thread;
-        thread = new HeaterThread(operationsService, runningTimeService, heaterInterface);
+        thread = new HeaterThread(operationsService, heaterInterface);
         thread.start();
         return thread;
     }

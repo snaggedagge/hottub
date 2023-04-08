@@ -1,11 +1,6 @@
 package ax.dkarlsso.hottub.controller.rpi;
 
-import ax.dkarlsso.hottub.model.RunningTime;
-import ax.dkarlsso.hottub.model.settings.OperationalData;
-import ax.dkarlsso.hottub.model.settings.Settings;
 import ax.dkarlsso.hottub.service.OperationsService;
-import ax.dkarlsso.hottub.service.RunningTimeService;
-import dkarlsso.commons.raspberry.RunningClock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,24 +11,14 @@ public class HeaterThread extends Thread {
 
     private final static Logger log = LoggerFactory.getLogger(HeaterThread.class);
 
-    private final RunningTimeService runningTimeService;
-
-    private final RunningClock circulationClock = new RunningClock();
-
-    private final RunningClock heaterClock = new RunningClock();
-
-    private final RunningClock bathClock = new RunningClock();
-
     private final OperationsService operationsService;
 
     private final HeaterInterface heater;
 
     public HeaterThread(final OperationsService operationsService,
-                        final RunningTimeService runningTimeService,
                         final HeaterInterface heaterInterface) {
         super();
         this.operationsService = operationsService;
-        this.runningTimeService = runningTimeService;
         heater = heaterInterface;
     }
 
@@ -45,7 +30,6 @@ public class HeaterThread extends Thread {
         while (true) {
             try {
                 heater.loop();
-                handleClocks();
                 handleTimers();
                 Thread.sleep(Duration.ofSeconds(20).toMillis());
             }
@@ -69,23 +53,5 @@ public class HeaterThread extends Thread {
                 operationsService.deleteTimer(timer.getUuid());
             }
         });
-    }
-
-    /**
-     * Handles hour clocks, recording run time of individual components
-     */
-    private void handleClocks() {
-        final OperationalData operationalData = operationsService.getOperationalData();
-        final Settings settings = operationsService.getSettings();
-        heaterClock.setStartedRunning(operationalData.isHeating());
-        circulationClock.setStartedRunning(operationalData.isCirculating());
-
-        boolean isBathtime = operationalData.getReturnTemp() > 35 && settings.getReturnTempLimit() > 35;
-        bathClock.setStartedRunning(isBathtime);
-
-        runningTimeService.saveTime(new RunningTime(heaterClock.getRunningTimeAndReset(),
-                circulationClock.getRunningTimeAndReset(), bathClock.getRunningTimeAndReset()));
-        operationalData.setHeaterTimeSinceStarted(heaterClock.getTotalRunningTime());
-        operationsService.updateOperationalData(operationalData);
     }
 }

@@ -50,7 +50,7 @@ public class StatisticsController implements
                 .heaterHours(BigDecimal.valueOf((double) runningTime.getRunningTimeHeater().toMinutes() / 60))
                 .circulationPumpHours(BigDecimal.valueOf((double) runningTime.getRunningTimeCirculation().toMinutes() / 60))
                 .effectiveBathTimeHours(BigDecimal.valueOf((double) runningTime.getBathTotalTime().toMinutes() / 60))
-                .heaterHoursSinceStart(BigDecimal.valueOf((double) operationsService.getOperationalData().getHeaterTimeSinceStarted().toMinutes() / 60)));
+                .heaterHoursSinceStart(BigDecimal.valueOf((double) runningTimeService.getActiveDurationSinceStart().toMinutes() / 60)));
     }
 
     @Override
