@@ -38,9 +38,9 @@ public class SettingsController implements ax.dkarlsso.hottub.interfaces.api.hot
         }
 
         operationsService.updateSettings(ax.dkarlsso.hottub.model.settings.Settings.builder()
-                .returnTempLimit(settings.getTemperatureLimit())
+                .hottubTemperatureLimit(settings.getTemperatureLimit())
                 .temperatureDiff(settings.getTemperatureDelta())
-                .overTempLimit(settings.getHeatingPanTemperatureLimit())
+                .heaterTemperatureLimit(settings.getHeatingPanTemperatureLimit())
                 .circulationTimeCycle(Duration.ofMinutes(settings.getCirculationTimeCycle()))
                 .lightsOn(settings.getLightsOn())
                 .debug(settings.getDebugMode())

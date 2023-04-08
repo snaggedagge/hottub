@@ -30,7 +30,7 @@ public class HeaterConfigurator implements OperationsConfigurator {
     @Override
     public void configure(final OperationalData operationalData,
                           final Settings settings) {
-        if(operationalData.getReturnTemp() + heatingTemperatureDelta < settings.getReturnTempLimit())
+        if(operationalData.getHottubTemperature() + heatingTemperatureDelta < settings.getHottubTemperatureLimit())
         {
             heatingTemperatureDelta = 0;
             operationalData.setHeating(true);
@@ -41,8 +41,8 @@ public class HeaterConfigurator implements OperationsConfigurator {
         }
 
         // Sanity checks to be safe
-        if (operationalData.getReturnTemp() > settings.getReturnTempLimit() + 10
-                || operationalData.getOverTemp() > settings.getOverTempLimit() + 20) {
+        if (operationalData.getHottubTemperature() > settings.getHottubTemperatureLimit() + 10
+                || operationalData.getHeaterTemperature() > settings.getHeaterTemperatureLimit() + 20) {
             log.warn("Turning off due to much higher temperatures");
             operationalData.setHeating(false);
         }

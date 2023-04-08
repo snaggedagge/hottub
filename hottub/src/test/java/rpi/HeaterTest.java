@@ -46,13 +46,13 @@ public class HeaterTest {
         Mockito.when(returnTempMax.readTemp()).thenReturn(25.0);
         Mockito.when(overTempMax.readTemp()).thenReturn(40.0);
 
-        settings.setReturnTempLimit(37);
-        settings.setOverTempLimit(45);
+        settings.setHottubTemperatureLimit(37);
+        settings.setHeaterTemperatureLimit(45);
         operationsService.updateSettings(settings);
 
         heater.loop();
         final OperationalData operationalData = operationsService.getOperationalData();
-        System.out.println(operationalData.getReturnTemp());
+        System.out.println(operationalData.getHottubTemperature());
 
         assertFalse(operationalData.isCirculating());
         assertTrue(operationalData.isHeating());
@@ -63,8 +63,8 @@ public class HeaterTest {
         Mockito.when(returnTempMax.readTemp()).thenReturn(15.0);
         Mockito.when(overTempMax.readTemp()).thenReturn(15.0);
 
-        settings.setReturnTempLimit(12);
-        settings.setOverTempLimit(20);
+        settings.setHottubTemperatureLimit(12);
+        settings.setHeaterTemperatureLimit(20);
         operationsService.updateSettings(settings);
 
         heater.loop();
@@ -79,8 +79,8 @@ public class HeaterTest {
         Mockito.when(returnTempMax.readTemp()).thenReturn(36.0);
         Mockito.when(overTempMax.readTemp()).thenReturn(58.0);
 
-        settings.setReturnTempLimit(37);
-        settings.setOverTempLimit(45);
+        settings.setHottubTemperatureLimit(37);
+        settings.setHeaterTemperatureLimit(45);
         operationsService.updateSettings(settings);
 
         heater.loop();
@@ -95,8 +95,8 @@ public class HeaterTest {
         Mockito.when(returnTempMax.readTemp()).thenReturn(37.0);
         Mockito.when(overTempMax.readTemp()).thenThrow(new NoConnectionException());
 
-        settings.setReturnTempLimit(35);
-        settings.setOverTempLimit(45);
+        settings.setHottubTemperatureLimit(35);
+        settings.setHeaterTemperatureLimit(45);
         operationsService.updateSettings(settings);
 
         heater.loop();
@@ -111,8 +111,8 @@ public class HeaterTest {
         Mockito.when(returnTempMax.readTemp()).thenThrow(new NoConnectionException());
         Mockito.when(overTempMax.readTemp()).thenReturn(59.0);
 
-        settings.setReturnTempLimit(35);
-        settings.setOverTempLimit(45);
+        settings.setHottubTemperatureLimit(35);
+        settings.setHeaterTemperatureLimit(45);
         operationsService.updateSettings(settings);
 
         heater.loop();
@@ -126,8 +126,8 @@ public class HeaterTest {
         Mockito.when(returnTempMax.readTemp()).thenReturn(30.0);
         Mockito.when(overTempMax.readTemp()).thenReturn(80.0);
 
-        settings.setReturnTempLimit(35);
-        settings.setOverTempLimit(45);
+        settings.setHottubTemperatureLimit(35);
+        settings.setHeaterTemperatureLimit(45);
         operationsService.updateSettings(settings);
 
         heater.loop();
@@ -141,8 +141,8 @@ public class HeaterTest {
         Mockito.when(returnTempMax.readTemp()).thenReturn(30.0);
         Mockito.when(overTempMax.readTemp()).thenReturn(55.0);
 
-        settings.setReturnTempLimit(37);
-        settings.setOverTempLimit(45);
+        settings.setHottubTemperatureLimit(37);
+        settings.setHeaterTemperatureLimit(45);
         operationsService.updateSettings(settings);
 
         heater.loop();
@@ -156,8 +156,8 @@ public class HeaterTest {
         when(returnTempMax.readTemp()).thenReturn(35.0);
         when(overTempMax.readTemp()).thenReturn(42.0);
 
-        settings.setReturnTempLimit(37);
-        settings.setOverTempLimit(42);
+        settings.setHottubTemperatureLimit(37);
+        settings.setHeaterTemperatureLimit(42);
         operationsService.updateSettings(settings);
 
         heater.loop();
@@ -196,8 +196,8 @@ public class HeaterTest {
         Mockito.when(returnTempMax.readTemp()).thenReturn(37.0);
         Mockito.when(overTempMax.readTemp()).thenReturn(45.0);
 
-        settings.setReturnTempLimit(8);
-        settings.setOverTempLimit(25);
+        settings.setHottubTemperatureLimit(8);
+        settings.setHeaterTemperatureLimit(25);
         operationsService.updateSettings(settings);
         heater.loop();
 
@@ -210,8 +210,8 @@ public class HeaterTest {
         Mockito.when(returnTempMax.readTemp()).thenReturn(25.0);
         Mockito.when(overTempMax.readTemp()).thenReturn(25.0);
 
-        settings.setReturnTempLimit(8);
-        settings.setOverTempLimit(27);
+        settings.setHottubTemperatureLimit(8);
+        settings.setHeaterTemperatureLimit(27);
         operationsService.updateSettings(settings);
         heater.loop();
 
@@ -228,13 +228,13 @@ public class HeaterTest {
 
         // 35 + 3 = 38 == should not heat
         settings.setTemperatureDiff(3);
-        settings.setReturnTempLimit(37);
-        settings.setOverTempLimit(45);
+        settings.setHottubTemperatureLimit(37);
+        settings.setHeaterTemperatureLimit(45);
         operationsService.updateSettings(settings);
         heater.loop();
 
         final OperationalData operationalData = operationsService.getOperationalData();
-        assertEquals(38, operationalData.getReturnTemp());
+        assertEquals(38, operationalData.getHottubTemperature());
         assertFalse(operationalData.isHeating());
     }
 
@@ -245,13 +245,13 @@ public class HeaterTest {
 
         // 33 + 3 = 36 == should heat
         settings.setTemperatureDiff(3);
-        settings.setReturnTempLimit(37);
-        settings.setOverTempLimit(45);
+        settings.setHottubTemperatureLimit(37);
+        settings.setHeaterTemperatureLimit(45);
         operationsService.updateSettings(settings);
         heater.loop();
 
         final OperationalData operationalData = operationsService.getOperationalData();
-        assertEquals(36, operationalData.getReturnTemp());
+        assertEquals(36, operationalData.getHottubTemperature());
         assertTrue(operationalData.isHeating());
     }
 }

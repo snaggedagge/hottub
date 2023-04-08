@@ -11,9 +11,9 @@ public final class MapperUtils {
 
     public static ax.dkarlsso.hottub.interfaces.model.hottub_api.Settings toExternalSettings(final Settings settings) {
         return new ax.dkarlsso.hottub.interfaces.model.hottub_api.Settings()
-                .temperatureLimit(settings.getReturnTempLimit())
+                .temperatureLimit(settings.getHottubTemperatureLimit())
                 .temperatureDelta(settings.getTemperatureDiff())
-                .heatingPanTemperatureLimit(settings.getOverTempLimit())
+                .heatingPanTemperatureLimit(settings.getHeaterTemperatureLimit())
                 .circulationTimeCycle(settings.getCirculationTimeCycle().toMinutesPart())
                 .lightsOn(settings.isLightsOn())
                 .debugMode(settings.isDebug());
@@ -22,9 +22,9 @@ public final class MapperUtils {
 
     public static Settings toInternalSettings(final ax.dkarlsso.hottub.interfaces.model.hottub_api.Settings settings) {
         return Settings.builder()
-                .returnTempLimit(settings.getTemperatureLimit())
+                .hottubTemperatureLimit(settings.getTemperatureLimit())
                 .temperatureDiff(settings.getTemperatureDelta())
-                .overTempLimit(settings.getHeatingPanTemperatureLimit())
+                .heaterTemperatureLimit(settings.getHeatingPanTemperatureLimit())
                 .circulationTimeCycle(Duration.ofMinutes(settings.getCirculationTimeCycle()))
                 .lightsOn(settings.getLightsOn())
                 .debug(settings.getDebugMode())

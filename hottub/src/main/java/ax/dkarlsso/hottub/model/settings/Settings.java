@@ -15,12 +15,12 @@ import java.time.Duration;
 @Builder
 public class Settings {
 
-    protected int returnTempLimit = 37;
+    protected int hottubTemperatureLimit = 37;
 
     /** Temperature diff between surface (wanted temp) and sensor */
     protected int temperatureDiff = 3;
 
-    protected int overTempLimit = returnTempLimit + 5;
+    protected int heaterTemperatureLimit = hottubTemperatureLimit + 5;
 
     protected boolean lightsOn = true;
 
@@ -28,19 +28,10 @@ public class Settings {
 
     protected Duration circulationTimeCycle = Duration.ofMinutes(3);
 
-    public Settings(final Settings settings) {
-        this.lightsOn = settings.lightsOn;
-        this.debug = settings.debug;
-        this.overTempLimit = settings.overTempLimit;
-        this.returnTempLimit = settings.returnTempLimit;
-        this.circulationTimeCycle = settings.circulationTimeCycle;
-        this.temperatureDiff = settings.temperatureDiff;
-    }
-
     public void applySettings(final Settings settings) {
         this.circulationTimeCycle = settings.getCirculationTimeCycle();
-        this.returnTempLimit = settings.getReturnTempLimit();
-        this.overTempLimit = settings.getOverTempLimit();
+        this.hottubTemperatureLimit = settings.getHottubTemperatureLimit();
+        this.heaterTemperatureLimit = settings.getHeaterTemperatureLimit();
         this.debug = settings.isDebug();
         this.lightsOn = settings.isLightsOn();
         this.temperatureDiff = settings.getTemperatureDiff();
@@ -52,23 +43,11 @@ public class Settings {
 
         settings.setCirculationTimeCycle(circulationTimeCycle);
         settings.setDebug(debug);
-        settings.setOverTempLimit(overTempLimit);
-        settings.setReturnTempLimit(returnTempLimit);
+        settings.setHeaterTemperatureLimit(heaterTemperatureLimit);
+        settings.setHottubTemperatureLimit(hottubTemperatureLimit);
         settings.setLightsOn(lightsOn);
         settings.setTemperatureDiff(temperatureDiff);
         return settings;
-    }
-
-    public void setReturnTempLimit(final int returnTempLimit) {
-        this.returnTempLimit = returnTempLimit;
-    }
-
-    public void setOverTempLimit(final int overTempLimit) {
-        this.overTempLimit = overTempLimit;
-    }
-
-    public void setCirculationTimeCycle(final Duration circulationTimeCycle) {
-        this.circulationTimeCycle = circulationTimeCycle;
     }
 
     @JsonGetter("circulationTimeCycle")

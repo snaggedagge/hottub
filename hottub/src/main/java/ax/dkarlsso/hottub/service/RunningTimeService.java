@@ -6,7 +6,6 @@ import ax.dkarlsso.hottub.model.settings.Settings;
 import dkarlsso.commons.raspberry.RunningClock;
 import dkarlsso.commons.repository.CrudRepository;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +37,7 @@ public class RunningTimeService {
         heaterClock.updateState(operationalData.isHeating());
         circulationClock.updateState(operationalData.isCirculating());
 
-        boolean isBathTime = operationalData.getReturnTemp() > 35 && settings.getReturnTempLimit() > 35;
+        boolean isBathTime = operationalData.getHottubTemperature() > 35 && settings.getHottubTemperatureLimit() > 35;
         bathClock.updateState(isBathTime);
 
         this.saveTime(new RunningTime(heaterClock.getDurationAndReset(),

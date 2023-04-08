@@ -10,17 +10,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class OperationalData {
-    private int returnTemp;
+    private int hottubTemperature;
 
-    private int overTemp;
+    private int heaterTemperature;
 
     private boolean heating;
 
     private boolean circulating;
 
     public void apply(final OperationalData operationalData) {
-        this.returnTemp = operationalData.returnTemp;
-        this.overTemp = operationalData.overTemp;
+        this.hottubTemperature = operationalData.hottubTemperature;
+        this.heaterTemperature = operationalData.heaterTemperature;
         this.heating = operationalData.heating;
         this.circulating = operationalData.circulating;
     }
@@ -30,8 +30,8 @@ public class OperationalData {
         return OperationalData.builder()
                 .circulating(this.isCirculating())
                 .heating(this.isHeating())
-                .overTemp(this.getOverTemp())
-                .returnTemp(this.getReturnTemp())
+                .heaterTemperature(this.getHeaterTemperature())
+                .hottubTemperature(this.getHottubTemperature())
                 .build();
     }
 }

@@ -28,7 +28,7 @@ public class StatsController implements ax.dkarlsso.hottub.interfaces.api.hottub
         return ResponseEntity.ok(new Stats()
                 .circulating(operationalData.isCirculating())
                 .heating(operationalData.isHeating())
-                .temperature(operationalData.getReturnTemp())
-                .heatingPanTemperature(operationalData.getOverTemp()));
+                .temperature(operationalData.getHottubTemperature())
+                .heatingPanTemperature(operationalData.getHeaterTemperature()));
     }
 }

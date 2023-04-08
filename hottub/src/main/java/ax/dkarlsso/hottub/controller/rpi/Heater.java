@@ -59,11 +59,11 @@ public class Heater implements HeaterInterface {
         final Settings settings = operationsService.getSettings();
         final OperationalData operationalData = operationsService.getOperationalData();
         try {
-            operationalData.setReturnTemp((int) returnTemperatureSensor.readTemp() + settings.getTemperatureDiff());
-            operationalData.setOverTemp((int) heatingPanSensor.readTemp());
+            operationalData.setHottubTemperature((int) returnTemperatureSensor.readTemp() + settings.getTemperatureDiff());
+            operationalData.setHeaterTemperature((int) heatingPanSensor.readTemp());
             if (settings.isDebug()) {
                 // Log temperature without temperature diff
-                log.debug("Sensor temperature is " + (operationalData.getReturnTemp() - settings.getTemperatureDiff()));
+                log.debug("Sensor temperature is " + (operationalData.getHottubTemperature() - settings.getTemperatureDiff()));
             }
             operationsConfigurators.forEach(operationsConfigurator ->
                     operationsConfigurator.configure(operationalData, settings));
@@ -75,9 +75,9 @@ public class Heater implements HeaterInterface {
         operationsService.updateOperationalData(operationalData);
         if(settings.isDebug()) {
             log.debug("Real temperature is {} and heating element temperature is {}",
-                    operationalData.getReturnTemp(), operationalData.getOverTemp());
+                    operationalData.getHottubTemperature(), operationalData.getHeaterTemperature());
             log.debug("Temperature limit is {} and heating element limit is {}",
-                    settings.getReturnTempLimit(), settings.getOverTempLimit());
+                    settings.getHottubTemperatureLimit(), settings.getHeaterTemperatureLimit());
         }
     }
 
