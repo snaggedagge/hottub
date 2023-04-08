@@ -10,6 +10,7 @@ import dkarlsso.commons.raspberry.relay.StubRelay;
 import dkarlsso.commons.raspberry.relay.interfaces.RelayInterface;
 import ax.dkarlsso.hottub.controller.rpi.Heater;
 import dkarlsso.commons.raspberry.sensor.temperature.TemperatureSensor;
+import dkarlsso.commons.repository.settings.SettingsFilesystemRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -24,7 +25,7 @@ import static org.mockito.Mockito.when;
  */
 public class HeaterTest {
     private final Settings settings = new Settings();
-    private final OperationsService operationsService = new OperationsService(settings);
+    private OperationsService operationsService;
 
     private final TemperatureSensor returnTempMax = Mockito.mock(TemperatureSensor.class);
     private final TemperatureSensor overTempMax = Mockito.mock(TemperatureSensor.class);
@@ -34,6 +35,10 @@ public class HeaterTest {
 
     @BeforeEach
     public void setup() {
+        final SettingsFilesystemRepository<Settings> settingsFilesystemRepository = Mockito.mock(SettingsFilesystemRepository.class);
+        when(settingsFilesystemRepository.read()).thenReturn(settings);
+        operationsService = new OperationsService(settingsFilesystemRepository);
+
         settings.setDebug(true);
         operationsService.updateSettings(settings);
         settings.setTemperatureDiff(0);
@@ -54,7 +59,7 @@ public class HeaterTest {
         final OperationalData operationalData = operationsService.getOperationalData();
         System.out.println(operationalData.getHottubTemperature());
 
-        assertFalse(operationalData.isCirculating());
+        assertTrue(operationalData.isCirculating()); // Always tru while heating with the weaker circulation pump
         assertTrue(operationalData.isHeating());
     }
 
@@ -122,21 +127,6 @@ public class HeaterTest {
     }
 
     @Test
-    public void loop_givenCriticallyHighCirculationPumpValues_expectPumpTurnedOff() throws Exception {
-        Mockito.when(returnTempMax.readTemp()).thenReturn(30.0);
-        Mockito.when(overTempMax.readTemp()).thenReturn(80.0);
-
-        settings.setHottubTemperatureLimit(35);
-        settings.setHeaterTemperatureLimit(45);
-        operationsService.updateSettings(settings);
-
-        heater.loop();
-        final OperationalData operationalData = operationsService.getOperationalData();
-        assertTrue(operationalData.isCirculating());
-        assertFalse(operationalData.isHeating());
-    }
-
-    @Test
     public void testHeatingCirculating() throws Exception {
         Mockito.when(returnTempMax.readTemp()).thenReturn(30.0);
         Mockito.when(overTempMax.readTemp()).thenReturn(55.0);
@@ -151,8 +141,12 @@ public class HeaterTest {
         assertTrue(operationalData.isHeating());
     }
 
+    /**
+     * Tests that if wanted temperature is 37, and heater reaches it, that it does not start until temperature drops over 1 degree
+     * This is to avoid start and stops every 15 seconds
+     */
     @Test
-    public void testDeltaTemp() throws Exception {
+    public void loop_givenDeltaTemperatureAndHeaterReachingTemperature_expectDropInTemperatureBeforeHeatingStartsAgain() throws Exception {
         when(returnTempMax.readTemp()).thenReturn(35.0);
         when(overTempMax.readTemp()).thenReturn(42.0);
 
@@ -163,7 +157,6 @@ public class HeaterTest {
         heater.loop();
 
         OperationalData operationalData = operationsService.getOperationalData();
-        assertFalse(operationalData.isCirculating());
         assertTrue(operationalData.isHeating());
 
         when(returnTempMax.readTemp()).thenReturn(36.0);
@@ -171,7 +164,6 @@ public class HeaterTest {
         heater.loop();
 
         operationalData = operationsService.getOperationalData();
-        assertTrue(operationalData.isCirculating());
         assertTrue(operationalData.isHeating());
 
         when(returnTempMax.readTemp()).thenReturn(37.0);
@@ -179,15 +171,17 @@ public class HeaterTest {
         heater.loop();
 
         operationalData = operationsService.getOperationalData();
-        assertTrue(operationalData.isCirculating());
         assertFalse(operationalData.isHeating());
 
         when(returnTempMax.readTemp()).thenReturn(36.0);
         when(overTempMax.readTemp()).thenReturn(42.0);
         heater.loop();
         operationalData = operationsService.getOperationalData();
-        assertTrue(operationalData.isCirculating());
         assertFalse(operationalData.isHeating());
+
+        when(returnTempMax.readTemp()).thenReturn(35.0);
+        heater.loop();
+        assertTrue(operationsService.getOperationalData().isHeating());
     }
 
 

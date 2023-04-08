@@ -61,15 +61,15 @@ public class HeaterConfiguration {
         final HeaterInterface heater;
         if(OSHelper.isRaspberryPi()) {
             GpioFactory.getInstance();
-            final TemperatureSensor returnTemperatureSensor = new DS18B20("28-030c979428d4");
-            final TemperatureSensor heatingPanSensor = new DS18B20("28-030297942385");
-            heater = new Heater(operationsConfigurators, operationsService, heatingPanSensor, returnTemperatureSensor,
+            final TemperatureSensor hottubTemperatureSensor = new DS18B20("28-030c979428d4");
+            final TemperatureSensor heaterTemperatureSensor = new DS18B20("28-030297942385");
+            heater = new Heater(operationsConfigurators, operationsService, heaterTemperatureSensor, hottubTemperatureSensor,
                     heatingRelay, circulationRelay);
         }
         else {
-            final TemperatureSensor returnTempSensor = () -> 20.2;
-            final TemperatureSensor overTempSensor = () -> 40.2;
-            heater = new Heater(operationsConfigurators, operationsService, overTempSensor, returnTempSensor,
+            final TemperatureSensor hottubTemperatureSensor = () -> 20.2;
+            final TemperatureSensor heaterTemperatureSensor = () -> 40.2;
+            heater = new Heater(operationsConfigurators, operationsService, heaterTemperatureSensor, hottubTemperatureSensor,
                     heatingRelay, circulationRelay);
         }
         return heater;

@@ -5,13 +5,11 @@ import ax.dkarlsso.hottub.model.BathDate;
 import ax.dkarlsso.hottub.model.RunningTime;
 import ax.dkarlsso.hottub.model.settings.Settings;
 import ax.dkarlsso.hottub.service.OperationsService;
-import com.pi4j.io.gpio.GpioFactory;
 import dkarlsso.commons.raspberry.OSHelper;
 import dkarlsso.commons.repository.CrudRepository;
 import dkarlsso.commons.repository.FilesystemPersistenceRepository;
 import dkarlsso.commons.repository.S3PersistenceRepository;
 import dkarlsso.commons.repository.settings.SettingsFilesystemRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -19,7 +17,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.CacheControl;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -29,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 @Configuration
 @EnableScheduling
-public class WebConfig implements WebMvcConfigurer {
+public class WebConfig {
 
     @Bean
     public OperationsService operationsService(final SettingsFilesystemRepository<Settings> settingsRepository){
@@ -103,11 +100,5 @@ public class WebConfig implements WebMvcConfigurer {
                         .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS));
             }
         };
-    }
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        //log.info("Adding interceptor");
-        registry.addInterceptor(new ConnectionLoggerInterceptor());
     }
 }
