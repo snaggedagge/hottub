@@ -14,17 +14,15 @@ import portalconnector.model.WebsiteDTO;
 import java.io.InputStream;
 import java.time.Instant;
 import java.util.Base64;
+import java.util.concurrent.TimeUnit;
 
 @Profile("internet-access")
 @Service
 @Slf4j
 public class WebPortalConnector {
-
-    private static final int SCHEDULED_FIFTEEN_MINUTES = 15 * 60 * 1000;
-
     private final PortalConnector portalConnector = new PortalConnector();
 
-    @Scheduled(fixedDelay = SCHEDULED_FIFTEEN_MINUTES)
+    @Scheduled(fixedDelay = 15, timeUnit = TimeUnit.MINUTES)
     public void scheduleFixedDelayTask() {
         final WebsiteDTO websiteDTO = WebsiteDTO.builder()
                 .permission(Permission.UNAUTHORIZED)

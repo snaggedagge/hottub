@@ -3,6 +3,7 @@ build/
 out/
 gradle/
 bin/
+logs/
 
 # Compiled class file
 *.class

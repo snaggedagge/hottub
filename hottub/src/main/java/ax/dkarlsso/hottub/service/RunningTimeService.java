@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Service that works as an hour meter, updating statistics of how long the heater, the circulation pump has been running
@@ -29,8 +30,7 @@ public class RunningTimeService {
 
     private final RunningClock bathClock = new RunningClock();
 
-    @Scheduled(initialDelay = 10000, // 10 seconds
-            fixedDelay = 300000) // 5 minutes
+    @Scheduled(initialDelayString = "PT10S", fixedDelay = 5, timeUnit = TimeUnit.MINUTES)
     public void recordRunningTime() {
         final OperationalData operationalData = operationsService.getOperationalData();
         final Settings settings = operationsService.getSettings();
