@@ -1,8 +1,7 @@
 package ax.dkarlsso.hottub.config.scheduled;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -18,9 +17,8 @@ import java.util.Base64;
 
 @Profile("internet-access")
 @Service
+@Slf4j
 public class WebPortalConnector {
-
-    private final static Logger log = LoggerFactory.getLogger(WebPortalConnector.class);
 
     private static final int SCHEDULED_FIFTEEN_MINUTES = 15 * 60 * 1000;
 

@@ -1,15 +1,13 @@
 package ax.dkarlsso.hottub.controller.rpi;
 
 import ax.dkarlsso.hottub.service.OperationsService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.Duration;
 import java.time.Instant;
 
+@Slf4j
 public class HeaterThread extends Thread {
-
-    private final static Logger log = LoggerFactory.getLogger(HeaterThread.class);
 
     private final OperationsService operationsService;
 

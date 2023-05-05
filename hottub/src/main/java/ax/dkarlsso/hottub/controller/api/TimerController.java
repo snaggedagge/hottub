@@ -4,7 +4,7 @@ import ax.dkarlsso.hottub.interfaces.model.hottub_api.Timer;
 import ax.dkarlsso.hottub.interfaces.model.hottub_api.TimerEntity;
 import ax.dkarlsso.hottub.model.settings.TimerSettings;
 import ax.dkarlsso.hottub.service.OperationsService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,14 +18,10 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/api")
+@AllArgsConstructor
 public class TimerController implements ax.dkarlsso.hottub.interfaces.api.hottub_api.TimersApi {
 
     private final OperationsService operationsService;
-
-    @Autowired
-    public TimerController(final OperationsService operationsService) {
-        this.operationsService = operationsService;
-    }
 
     @Override
     public ResponseEntity<TimerEntity> addTimer(Timer timer) {
@@ -37,7 +33,7 @@ public class TimerController implements ax.dkarlsso.hottub.interfaces.api.hottub
     @Override
     public ResponseEntity<Void> deleteTimer(UUID timerId) {
         operationsService.deleteTimer(timerId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @Override

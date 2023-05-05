@@ -224,12 +224,16 @@ components:
       properties:
         temperatureLimit:
           type: integer
+          minimum: 5
+          maximum: 45
           description: Wanted temperature in hot tub
         temperatureDelta:
           type: integer
           description: Delta temperature difference between sensed temperature and actual temperature. Needed since temperature sensor is in the bottom, meaning temperatures will differ a few degrees from the sensor and the top of the hottub
         heatingPanTemperatureLimit:
           type: integer
+          minimum: 15
+          maximum: 60
           description: Maximum temperature allowed in heating pan until circulation pump should start operating
         circulationTimeCycle:
           type: integer

@@ -2,10 +2,7 @@ package ax.dkarlsso.hottub.model.settings;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.Duration;
 
@@ -13,6 +10,7 @@ import java.time.Duration;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@EqualsAndHashCode
 public class Settings {
 
     protected int hottubTemperatureLimit = 37;

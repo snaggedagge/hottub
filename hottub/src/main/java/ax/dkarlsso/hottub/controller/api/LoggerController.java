@@ -31,7 +31,7 @@ public class LoggerController implements ax.dkarlsso.hottub.interfaces.api.hottu
         Integer linesPerError = 25;
 
         final File logFile = getLogfile();
-        return ResponseEntity.ok(new LogEntry().rows(readFile(logFile, linesPerError, 600)));
+        return ResponseEntity.ok(new LogEntry().rows(readFile(logFile, linesPerError, 100)));
     }
 
     // Ugly hack like everything else, will probably implement option to select which of the logs that is wanted to be used

@@ -3,7 +3,7 @@ package ax.dkarlsso.hottub.controller.api;
 import ax.dkarlsso.hottub.interfaces.model.hottub_api.Stats;
 import ax.dkarlsso.hottub.model.settings.OperationalData;
 import ax.dkarlsso.hottub.service.OperationsService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,14 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api")
+@AllArgsConstructor
 public class StatsController implements ax.dkarlsso.hottub.interfaces.api.hottub_api.StatsApi {
 
     private final OperationsService operationsService;
-
-    @Autowired
-    public StatsController(final OperationsService operationsService) {
-        this.operationsService = operationsService;
-    }
 
     @Override
     public ResponseEntity<Stats> getStats() {

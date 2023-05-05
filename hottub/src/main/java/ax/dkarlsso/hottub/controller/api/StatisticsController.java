@@ -1,13 +1,11 @@
 package ax.dkarlsso.hottub.controller.api;
 
-import ax.dkarlsso.hottub.interfaces.api.hottub_api.BathDatesApi;
 import ax.dkarlsso.hottub.interfaces.model.hottub_api.Statistics;
 import ax.dkarlsso.hottub.model.BathDate;
 import ax.dkarlsso.hottub.model.RunningTime;
-import ax.dkarlsso.hottub.service.OperationsService;
 import ax.dkarlsso.hottub.service.RunningTimeService;
 import dkarlsso.commons.repository.CrudRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,24 +22,14 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/api")
+@AllArgsConstructor
 public class StatisticsController implements
         ax.dkarlsso.hottub.interfaces.api.hottub_api.StatisticsApi,
         ax.dkarlsso.hottub.interfaces.api.hottub_api.BathDatesApi {
 
     private final RunningTimeService runningTimeService;
 
-    private final OperationsService operationsService;
-
     private final CrudRepository<BathDate, String> bathDateLogRepository;
-
-    @Autowired
-    public StatisticsController(final RunningTimeService runningTimeService,
-                                final OperationsService operationsService,
-                                final CrudRepository<BathDate, String> bathDateLogRepository) {
-        this.runningTimeService = runningTimeService;
-        this.operationsService = operationsService;
-        this.bathDateLogRepository = bathDateLogRepository;
-    }
 
     @Override
     public ResponseEntity<Statistics> getStatistics() {

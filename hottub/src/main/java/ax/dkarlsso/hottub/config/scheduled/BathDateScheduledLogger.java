@@ -2,19 +2,18 @@ package ax.dkarlsso.hottub.config.scheduled;
 
 import ax.dkarlsso.hottub.model.BathDate;
 import dkarlsso.commons.repository.CrudRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
+@Slf4j
 public class BathDateScheduledLogger {
-    private final static Logger log = LoggerFactory.getLogger(BathDateScheduledLogger.class);
-    private final int SCHEDULED_ONE_HOUR = 60 * 60 * 1000;
 
     private LocalDate lastLoggedDate = LocalDate.now();
 
@@ -25,7 +24,7 @@ public class BathDateScheduledLogger {
         this.bathDateLogRepository = bathDateLogRepository;
     }
 
-    @Scheduled(fixedDelay = SCHEDULED_ONE_HOUR, initialDelay = 5000)
+    @Scheduled(fixedDelay = 1, initialDelayString = "PT5S", timeUnit = TimeUnit.HOURS)
     public void scheduleFixedDelayTask() {
         lastLoggedDate = LocalDate.now();
 

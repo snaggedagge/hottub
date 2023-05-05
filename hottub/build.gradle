@@ -1,10 +1,11 @@
 plugins {
     id 'java'
-    id "org.openapi.generator" version "6.0.1"
-    id 'org.springframework.boot' version '2.7.3'
+    id "org.openapi.generator" version "6.5.0"
+    id 'org.springframework.boot' version '3.0.6'
     id "io.freefair.lombok" version "6.5.0.3"
+    id "io.spring.dependency-management" version "1.1.0"
 }
-apply plugin: 'io.spring.dependency-management'
+
 sourceCompatibility = 17
 targetCompatibility = 17
 
@@ -13,9 +14,8 @@ repositories {
     mavenCentral()
 }
 
-compileJava {
+compileTestJava {
     dependsOn tasks.openApiGenerate
-    delete files("${buildDir}/generated/src/main/java/org")
 }
 
 assemble {
@@ -35,7 +35,8 @@ openApiGenerate {
     modelPackage = "ax.dkarlsso.hottub.interfaces.model.hottub_api"
     configOptions = [
             dateLibrary: "java8",
-            interfaceOnly: "true"
+            interfaceOnly: "true",
+            useSpringBoot3: "true"
     ]
 }
 
@@ -47,24 +48,23 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'ch.qos.logback:logback-classic'
+    implementation 'jakarta.validation:jakarta.validation-api'
 
-    implementation group: 'ch.qos.logback', name: 'logback-classic'
 
     implementation 'com.pi4j:pi4j-core:1.2'
     implementation 'commons-io:commons-io:2.6'
 
-    implementation 'org.openapitools:jackson-databind-nullable:0.2.3'
+    implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
 
-    implementation 'javax.validation:validation-api:2.0.1.Final'
+    implementation 'io.swagger.core.v3:swagger-annotations:2.2.9'
+    implementation 'io.swagger.core.v3:swagger-core:2.2.9'
 
-    implementation 'io.swagger.core.v3:swagger-annotations:2.2.2'
-    implementation 'io.swagger.core.v3:swagger-core:2.2.2'
-
-
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
-    testImplementation 'org.mockito:mockito-core:4.7.0'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testImplementation 'org.mockito:mockito-core'
 }
 
 test {

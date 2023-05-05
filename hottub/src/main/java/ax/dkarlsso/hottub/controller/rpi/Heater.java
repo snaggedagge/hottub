@@ -7,16 +7,15 @@ import ax.dkarlsso.hottub.model.settings.Settings;
 import ax.dkarlsso.hottub.service.OperationsService;
 import dkarlsso.commons.raspberry.relay.interfaces.RelayInterface;
 import dkarlsso.commons.raspberry.sensor.temperature.TemperatureSensor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
 /**
  * Refactored from C++ Arduino script. Ugly but working for now
  */
+@Slf4j
 public class Heater implements HeaterInterface {
-    private final static Logger log = LoggerFactory.getLogger(Heater.class);
 
     private final List<OperationsConfigurator> operationsConfigurators;
 

@@ -4,8 +4,7 @@ import ax.dkarlsso.hottub.model.settings.OperationalData;
 import ax.dkarlsso.hottub.model.settings.Settings;
 import ax.dkarlsso.hottub.utils.TimeElapsedTimer;
 import dkarlsso.commons.raspberry.relay.interfaces.RelayInterface;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -15,8 +14,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Order(2)
+@Slf4j
 public class CirculationPumpConfigurator implements OperationsConfigurator {
-    private final static Logger log = LoggerFactory.getLogger(HeaterConfigurator.class);
 
     /** Parameter to avoid fast on/off/on behavior, letting relays rest when set point has been reached */
     private int circulationTemperatureDelta = 0;
