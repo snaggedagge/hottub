@@ -3,7 +3,6 @@ package ax.dkarlsso.hottub.controller.api;
 import ax.dkarlsso.hottub.model.settings.Settings;
 import ax.dkarlsso.hottub.service.OperationsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
